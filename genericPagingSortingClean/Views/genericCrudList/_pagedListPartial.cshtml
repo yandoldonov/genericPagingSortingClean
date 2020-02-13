@@ -1,0 +1,101 @@
+﻿@model businessLogic.interfaces.IListModelCollection
+
+<div id="partialDataContainer">
+    <div class="row" style="margin-right: 10px;margin-left: 10px;">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        @for (int i = 0; i < Model.viewSortParams.listablePropertiesCount; i++)
+                        {
+                            <th scope="col">
+                                @Ajax.ActionLink(Model.viewSortParams.columnParemeters[i].colDisplay, "pagedListPartial", Model.controller,
+                               new { pageNumber = Model.viewSortParams.pageNumber, takeCount = Model.viewSortParams.takeCount, orderBy = Model.viewSortParams.columnParemeters[i].colValue, sortOrder = Model.viewSortParams.columnParemeters[i].sortOrder, selectedProperty = Model.selectedProperty, queryString = Model.queryString, queryOptions = Model.queryOptions },
+                                     new AjaxOptions
+                                     {
+                                         OnBegin = "grayOutArea",
+                                         HttpMethod = "GET",
+                                         InsertionMode = InsertionMode.Replace,
+                                         UpdateTargetId = "viewSectionPartial",
+                                     },
+                                     null)
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.items)
+                    {
+                        <tr>
+                            @for (int i = 0; i < item.listablePropertiesCount; i++)
+                            {
+                                <td>@item.properties[i].value</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" style="margin-right: 10px;margin-left: 10px;">
+        <div class="col-md-4">
+            @if (Model.totalPages > 1 && Model.currentPage > 1)
+            {
+                @Ajax.ActionLink("First", "pagedListPartial", Model.controller,
+               new { orderBy = Model.currentSortColumn, sortOrder = Model.currentSortOrder, pageNumber = 1, takeCount = Model.currentViewCount, selectedProperty = Model.selectedProperty, queryString = Model.queryString, queryOptions = Model.queryOptions },
+                                  new AjaxOptions
+                                  {
+                                      OnBegin = "grayOutArea",
+                                      HttpMethod = "GET",
+                                      InsertionMode = InsertionMode.Replace,
+                                      UpdateTargetId = "viewSectionPartial",
+                                  },
+                                  new { @class = "btn btn-outline-success my-2 my-sm-0", @style = "margin-left: 10px;" })
+
+                @Ajax.ActionLink("Previous", "pagedListPartial", Model.controller,
+               new { orderBy = Model.currentSortColumn, sortOrder = Model.currentSortOrder, pageNumber = Model.previousPage, takeCount = Model.currentViewCount, selectedProperty = Model.selectedProperty, queryString = Model.queryString, queryOptions = Model.queryOptions },
+                                 new AjaxOptions
+                                 {
+                                     OnBegin = "grayOutArea",
+                                     HttpMethod = "GET",
+                                     InsertionMode = InsertionMode.Replace,
+                                     UpdateTargetId = "viewSectionPartial",
+                                 },
+                                 new { @class = "btn btn-outline-success my-2 my-sm-0", @style = "margin-left: 10px;" })
+            }
+            <span>@Model.totalPages pages. @Model.totalItemCount Items. </span><span>current page: @Model.currentPage </span>
+        </div>
+        <div class="col-md-4 text-right">
+            @if (Model.totalPages > 1 && Model.currentPage < Model.totalPages)
+            {
+                @Ajax.ActionLink("Next", "pagedListPartial", Model.controller,
+               new { orderBy = Model.currentSortColumn, sortOrder = Model.currentSortOrder, pageNumber = Model.nextPage, takeCount = Model.currentViewCount, selectedProperty = Model.selectedProperty, queryString = Model.queryString, queryOptions = Model.queryOptions },
+                                 new AjaxOptions
+                                 {
+                                     OnBegin = "grayOutArea",
+                                     HttpMethod = "GET",
+                                     InsertionMode = InsertionMode.Replace,
+                                     UpdateTargetId = "viewSectionPartial",
+                                 },
+                                 new { @class = "btn btn-outline-success my-2 my-sm-0", @style = "margin-right: 10px;" })
+
+                @Ajax.ActionLink("Last", "pagedListPartial", Model.controller,
+               new { orderBy = Model.currentSortColumn, sortOrder = Model.currentSortOrder, pageNumber = Model.totalPages, takeCount = Model.currentViewCount, selectedProperty = Model.selectedProperty, queryString = Model.queryString, queryOptions = Model.queryOptions },
+                                 new AjaxOptions
+                                 {
+                                     OnBegin = "grayOutArea",
+                                     HttpMethod = "GET",
+                                     InsertionMode = InsertionMode.Replace,
+                                     UpdateTargetId = "viewSectionPartial",
+                                 },
+                                 new { @class = "btn btn-outline-success my-2 my-sm-0", @style = "margin-right: 10px;" })
+            }
+
+
+        </div>
+        <div class="col-md-4 text-right">
+            @Html.Partial($"~/Views/genericCrudList/_updatePagedListTakeCountFormPartial.cshtml", Model.filterFormModel)
+        </div>
+    </div>
+</div>

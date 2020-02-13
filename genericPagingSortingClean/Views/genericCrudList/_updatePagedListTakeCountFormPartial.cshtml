@@ -1,0 +1,34 @@
+﻿@model businessLogic.interfaces.IFilterDataFormModel
+
+<div class="pull-right">
+    @using (Ajax.BeginForm("updatePagedListTakeCount", Model.controller, null, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "grayOutArea",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "viewSectionPartial",
+    }, new { @class = "form-inline pull-right" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.genericTypeName)
+        @Html.HiddenFor(m => m.selectedProperty)
+        @Html.HiddenFor(m => m.selectedQuetyOption)
+        @Html.HiddenFor(m => m.queryString)
+        @Html.HiddenFor(m => m.orderBy)
+        @Html.HiddenFor(m => m.currentPage)
+        @Html.HiddenFor(m => m.currentSortOrder)
+
+        <div class="form-group">
+            <div class="col-xs-2">
+                @Html.TextBoxFor(m => m.takeCount, new { @class = "form-control", placeholder = "selection" })
+                @Html.ValidationMessageFor(m => m.takeCount, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                <input type="submit" class="btn btn-danger" value="Update" name="ButtonType" id="actionButton" />
+            </div>
+        </div>
+    }
+</div>
+

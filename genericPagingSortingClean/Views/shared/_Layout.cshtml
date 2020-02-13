@@ -1,0 +1,27 @@
+﻿@using System.Web.Optimization;
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Paging & Sorting</title>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryUi")
+    @Scripts.Render("~/bundles/bootstrapScripts")
+    @Scripts.Render("~/bundles/unobtrusiveAjax")
+    @Scripts.Render("~/bundles/validation")
+    @Scripts.Render("~/bundles/custom")
+
+    @Styles.Render("~/Content/jqueryUi")
+    @Styles.Render("~/Content/bootstrapStyles")
+
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>
