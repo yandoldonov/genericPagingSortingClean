@@ -2,6 +2,7 @@
 using businessLogic.viewModelFactories;
 using businessLogic.viewModels;
 using dbPersistance.enums;
+using dbPersistance.extentionHelpers;
 using dbPersistance.helperModels;
 using dbPersistance.Interfaces;
 using System;
@@ -84,9 +85,8 @@ namespace genericPagingSortingClean.Controllers
         public ActionResult updateQueryVariantsFromDatabase(string selectedProperty)
         {
             if (!string.IsNullOrEmpty(selectedProperty))
-            {
-                MethodInfo selectListMethod = typeof(TDataItem).GetMethod("getSelectList");
-                SelectList xList = selectListMethod.Invoke(null, new object[] { selectedProperty }) as SelectList;
+            {               
+                SelectList xList = pagedListExtentionHelpers.queryVariantsSelectList(typeof(TDataItem), selectedProperty);
                 return Json(xList);
             }
             else

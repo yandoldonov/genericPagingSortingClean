@@ -31,16 +31,16 @@ namespace businessLogic.viewModels
                 id = _TDbItem.Id,
                 guid = _TDbItem.guid,
                 genericTypeName = typeof(TDbItem).Name,
-                listablePropertiesCount = _TDbItem.listablePropertiesCount
+                listablePropertiesCount = dbPersistance.extentionHelpers.typeExtentions.countPageListProperties(typeof(TDbItem))
             };
 
-            for (int i = 0; i < _TDbItem.listablePropertiesCount; i++)
+            foreach(var item in dbPersistance.extentionHelpers.typeExtentions.getPageListProperties(typeof(TDbItem)))
             {
                 _basicListCollectionItem.properties.Add(new collectionItemProperty()
                 {
-                    display = _TDbItem.getPropertyDisplay(i),
-                    value = _TDbItem.getPropertyValue(i),
-                    number = i
+                    display = dbPersistance.extentionHelpers.typeExtentions.getPagedListPropertyAttribute(item).getDisplay(),
+                    value = item.GetValue(_TDbItem).ToString(),
+                    number = dbPersistance.extentionHelpers.typeExtentions.getPagedListPropertyAttribute(item).getPosition(),
                 });
             }
 

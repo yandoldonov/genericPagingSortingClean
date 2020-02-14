@@ -1,6 +1,7 @@
 ﻿using businessLogic.interfaces;
 using businessLogic.viewModels;
 using dbPersistance.enums;
+using dbPersistance.extentionHelpers;
 using dbPersistance.Interfaces;
 using dbPersistance.uOw;
 using System;
@@ -24,90 +25,14 @@ namespace businessLogic.viewModelFactories
         public genericListModelFactory()
         {
             unit = new unitOfWork<TDataItem>();
-        }
-
-        public IListModelCollection getDataList(string _controller, string _controllerAction)
-        {
-            IListModelCollection _collectionModel = new genericModelCollection(_controller, _controllerAction);
-
-            MethodInfo method2 = typeof(TDataItem).GetMethod("getListSortParemeters");
-            _collectionModel.viewSortParams = method2.Invoke(null, new object[] { }) as IViewSortParameters;
-            _collectionModel.currentSortOrder = _collectionModel.viewSortParams.defaultSortOrder;
-            _collectionModel.currentSortColumn = _collectionModel.viewSortParams.defaultSortColumn;
-
-            var dataCollection = unit.repository.GetAsNoTracking();
-
-            MethodInfo method = typeof(TListModelItem).GetMethod("buildFromDbInstance");
-
-            foreach (var item in dataCollection) _collectionModel.items.Add(method.Invoke(null, new object[] { item }) as ICollectionItem);
-
-            _collectionModel.currentPage = 1;
-            _collectionModel.currentViewCount = 10;
-            int totalCount = unit.repository.Count();
-
-            if (totalCount > _collectionModel.currentViewCount)
-            {
-                if (totalCount % _collectionModel.currentViewCount > 0)
-                {
-                    _collectionModel.totalPages = totalCount / _collectionModel.currentViewCount + 1;
-                }
-                else
-                {
-                    _collectionModel.totalPages = totalCount / _collectionModel.currentViewCount;
-                }
-            }
-            else
-            {
-                _collectionModel.totalPages = 1;
-            }
-
-
-            return _collectionModel;
-        }
-
-        public IListModelCollection getDataList(string _controller, string _controllerAction, int takeCount)
-        {
-            IListModelCollection _collectionModel = new genericModelCollection(_controller, _controllerAction);
-
-            MethodInfo method2 = typeof(TDataItem).GetMethod("getListSortParemeters");
-            _collectionModel.viewSortParams = method2.Invoke(null, new object[] { null }) as IViewSortParameters;
-            _collectionModel.currentSortOrder = _collectionModel.viewSortParams.defaultSortOrder;
-            _collectionModel.currentSortColumn = _collectionModel.viewSortParams.defaultSortColumn;
-
-            var dataCollection = unit.repository.GetChunksOf(0, takeCount);
-
-            MethodInfo method = typeof(TListModelItem).GetMethod("buildFromDbInstance");
-            foreach (var item in dataCollection) _collectionModel.items.Add(method.Invoke(null, new object[] { item }) as ICollectionItem);
-
-            _collectionModel.currentPage = 1;
-            _collectionModel.currentViewCount = takeCount;
-            int totalCount = unit.repository.Count();
-
-            if (totalCount > _collectionModel.currentViewCount)
-            {
-                if (totalCount % _collectionModel.currentViewCount > 0)
-                {
-                    _collectionModel.totalPages = totalCount / _collectionModel.currentViewCount + 1;
-                }
-                else
-                {
-                    _collectionModel.totalPages = totalCount / _collectionModel.currentViewCount;
-                }
-            }
-            else
-            {
-                _collectionModel.totalPages = 1;
-            }
-
-            return _collectionModel;
-        }
+        }       
 
         public IListModelCollection getDataList(string _controller, string _controllerAction, int takeCount, int pageNumber)
         {
             IListModelCollection _collectionModel = new genericModelCollection(_controller, _controllerAction);
 
-            MethodInfo method2 = typeof(TDataItem).GetMethod("getListSortParemeters");
-            _collectionModel.viewSortParams = method2.Invoke(null, new object[] { }) as IViewSortParameters;
+
+            _collectionModel.viewSortParams = pagedListExtentionHelpers.getListSortParemeters(typeof(TDataItem));
             _collectionModel.currentSortOrder = _collectionModel.viewSortParams.defaultSortOrder;
             _collectionModel.currentSortColumn = _collectionModel.viewSortParams.defaultSortColumn;
 
@@ -157,8 +82,7 @@ namespace businessLogic.viewModelFactories
                 controller = _controller
             };
 
-            MethodInfo method2 = typeof(TDataItem).GetMethod("getListSortParemeters");
-            _collectionModel.viewSortParams = method2.Invoke(null, new object[] { }) as IViewSortParameters;
+            _collectionModel.viewSortParams = pagedListExtentionHelpers.getListSortParemeters(typeof(TDataItem));
             _collectionModel.currentSortOrder = _sortOrder;
             _collectionModel.currentSortColumn = orderBy;
 
@@ -259,8 +183,7 @@ namespace businessLogic.viewModelFactories
             // get list of properties, their display, value and sort order - to be used for column headings and 
             // as parameters for associated links
 
-            MethodInfo method2 = typeof(TDataItem).GetMethod("getListSortParemeters");
-            _collectionModel.viewSortParams = method2.Invoke(null, new object[] { }) as IViewSortParameters;
+            _collectionModel.viewSortParams = pagedListExtentionHelpers.getListSortParemeters(typeof(TDataItem));
             _collectionModel.currentSortOrder = _sortOrder;
             _collectionModel.currentSortColumn = orderBy;
 
@@ -277,9 +200,12 @@ namespace businessLogic.viewModelFactories
                 (_controller,
                 _controllerAction, takeCount, pageNumber, _sortOrder, orderBy, selectedProperty, queryString, queryOptions.ToString());
 
-            MethodInfo getFilterMethod = typeof(TDataItem).GetMethod("getFilter");
+            //MethodInfo getFilterMethod = typeof(TDataItem).GetMethod("getFilter");
+            //Expression<Func<TDataItem, bool>> _dataFilter 
+            //    = getFilterMethod.Invoke(null, new object[] { selectedProperty, queryString, queryOptions }) as Expression<Func<TDataItem, bool>>;
 
-            Expression<Func<TDataItem, bool>> _dataFilter = getFilterMethod.Invoke(null, new object[] { selectedProperty, queryString, queryOptions }) as Expression<Func<TDataItem, bool>>;
+            Expression<Func<TDataItem, bool>> _dataFilter 
+                = dbPersistance.extentionHelpers.expressionTreeBuilder<TDataItem>.buildQueryExpression(selectedProperty, queryString, queryOptions);
 
             _collectionModel.currentViewCount = takeCount;
             _collectionModel.totalItemCount = unit.repository.CountSelectively(_dataFilter);

@@ -27,13 +27,5 @@ namespace dbPersistance.Interfaces
         {
             get;
         }
-
-        int listablePropertiesCount
-        {
-            get;
-        }
-
-        string getPropertyDisplay(int propertyIndex);
-        string getPropertyValue(int propertyIndex);
     }
 }

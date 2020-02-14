@@ -77,12 +77,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="atributes\pagedListEntityAttribute.cs" />
+    <Compile Include="atributes\pagedListPropertyAttribute.cs" />
     <Compile Include="dbContext.cs" />
     <Compile Include="dbItemTypeOne.cs" />
     <Compile Include="dbItemTypeTwo.cs" />
     <Compile Include="enums\filterType.cs" />
     <Compile Include="enums\queryOptions.cs" />
     <Compile Include="enums\sortOrder.cs" />
+    <Compile Include="extentionHelpers\expressionTreeBuilder.cs" />
+    <Compile Include="extentionHelpers\pagedListExtentionHelpers.cs" />
+    <Compile Include="extentionHelpers\typeExtentions.cs" />
     <Compile Include="helperModels\selectlistItemHelper.cs" />
     <Compile Include="helperModels\sortParameterItem.cs" />
     <Compile Include="helperModels\sortParameters.cs" />
@@ -109,6 +114,7 @@
       <DependentUpon>202002131432230_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

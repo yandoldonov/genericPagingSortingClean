@@ -1,5 +1,6 @@
 ﻿using businessLogic.interfaces;
 using dbPersistance.enums;
+using dbPersistance.extentionHelpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -62,14 +63,12 @@ namespace businessLogic.viewModels
         }
 
         public void setFormInitialParameters(Type _type)
-        {
-            MethodInfo searchablePropertyListMethod = _type.GetMethod("searchablePropertyList");
-            this.properties = searchablePropertyListMethod.Invoke(null, new object[] { }) as IEnumerable<SelectListItem>;
+        {           
+            this.properties = pagedListExtentionHelpers.searchablePropertyList(_type);
 
             if (this.properties.Any())
             {
-                MethodInfo searchableFilterTypesMethod = _type.GetMethod("searchableFilterTypes");
-                this.queryVariants = searchableFilterTypesMethod.Invoke(null, new object[] { this.properties.FirstOrDefault().Value }) as IEnumerable<SelectListItem>;
+                this.queryVariants = pagedListExtentionHelpers.queryVariants(_type, this.properties.FirstOrDefault().Value);
             }
             else
             {
@@ -79,8 +78,7 @@ namespace businessLogic.viewModels
                 };
             }
 
-            MethodInfo defaultSortPropertyMethod = _type.GetMethod("getDefaultSortProperty");
-            this.orderBy = defaultSortPropertyMethod.Invoke(null, new object[] { }) as string;
+            this.orderBy = typeExtentions.getDefaultPagedListProperty(_type).Name;
             this.currentPage = 1;
 
             this.genericTypeName = _type.Name;
