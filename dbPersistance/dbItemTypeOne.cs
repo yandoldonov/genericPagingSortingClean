@@ -125,7 +125,7 @@ namespace dbPersistance
                 case "boolvalue":
                     break;
                 default:
-                    orderProperty = "id";
+                    orderProperty = "Id";
                     break;
             }
 
@@ -136,7 +136,7 @@ namespace dbPersistance
         {
             return new List<SelectListItem>
             {
-                new SelectListItem { Text = "id", Value = "id" },
+                new SelectListItem { Text = "Id", Value = "Id" },
                 new SelectListItem { Text = "guid", Value = "guid" },
                 new SelectListItem { Text = "name", Value = "name" },
                 new SelectListItem { Text = "description", Value = "description" },
@@ -160,7 +160,7 @@ namespace dbPersistance
 
         public static string getDefaultSortProperty()
         {
-            return "id";
+            return "Id";
         }
 
         public static Expression<Func<dbItemTypeOne, bool>> getFilter
@@ -172,22 +172,22 @@ namespace dbPersistance
 
             switch (selectedProperty)
             {
-                case "id":
-                    if (int.TryParse(queryString, out int _idValue))
+                case "Id":
+                    if (int.TryParse(queryString, out int _IdValue))
                     {
                         switch (_queryOptions)
                         {
                             case queryOptions.equals:
-                                _expression = x => x.Id == _idValue;
+                                _expression = x => x.Id == _IdValue;
                                 break;
                             case queryOptions.notEquals:
-                                _expression = x => x.Id != _idValue;
+                                _expression = x => x.Id != _IdValue;
                                 break;
                             case queryOptions.lessThan:
-                                _expression = x => x.Id < _idValue;
+                                _expression = x => x.Id < _IdValue;
                                 break;
                             case queryOptions.largerThan:
-                                _expression = x => x.Id > _idValue;
+                                _expression = x => x.Id > _IdValue;
                                 break;
                             default:
                                 _expression = null;
@@ -196,7 +196,7 @@ namespace dbPersistance
                     }
                     else
                     {
-                        throw new InvalidCastException("provided argument is not of correct type");
+                        throw new InvalidCastException("provIded argument is not of correct type");
                     }
                     break;
                 case "guid":
@@ -284,7 +284,7 @@ namespace dbPersistance
                     }
                     else
                     {
-                        throw new InvalidCastException("provided argument is not of correct type");
+                        throw new InvalidCastException("provIded argument is not of correct type");
                     }
                     break;
                 case "boolvalue":
@@ -309,7 +309,7 @@ namespace dbPersistance
         {
             List<selectlistItemHelper> emptyList = new List<selectlistItemHelper>();
 
-            if (property == "id" || property == "decimalData")
+            if (property == "Id" || property == "decimalData")
             {
                 emptyList.Add(new selectlistItemHelper { name = "equals", guid = "equals" });
                 emptyList.Add(new selectlistItemHelper { name = "lessThan", guid = "lessThan" });
@@ -336,7 +336,7 @@ namespace dbPersistance
             switch (propertyIndex)
             {
                 case 0:
-                    return "id";
+                    return "Id";
                 case 1:
                     return "guid";
                 case 2:
@@ -377,7 +377,7 @@ namespace dbPersistance
         {
             sortParameters _sortParameters = new sortParameters()
             {
-                defaultSortColumn = "id",
+                defaultSortColumn = "Id",
                 defaultSortOrder = sortOrder.ASC,
                 pageNumber = 1,
                 takeCount = 10
@@ -386,8 +386,8 @@ namespace dbPersistance
             _sortParameters.addPropertyParameters(new sortParameterItem()
             {
                 number = 1,
-                colDisplay = "id",
-                colValue = "id",
+                colDisplay = "Id",
+                colValue = "Id",
                 sortOrder = sortOrder.ASC
             });
 

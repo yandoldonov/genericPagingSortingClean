@@ -354,7 +354,7 @@ namespace businessLogic.viewModelFactories
 
         public filterType checkPropertyType(Type _type, string propertyName)
         {
-            if(_type.GetProperties().Any(x => x.Name == propertyName))
+            if (_type.GetProperties().Any(x => x.Name == propertyName))
             {
                 var prop = _type.GetProperties().FirstOrDefault(x => x.Name == propertyName);
 
