@@ -40,7 +40,7 @@ namespace businessLogic.viewModels
         public string currentSort { get; set; }
         public string queryString { get; set; }
         public string selectedProperty { get; set; }
-        public queryOptions queryOptions { get; set; }
+        public string queryOptions { get; set; }
 
         public string controller { get; set; }
         public string controllerAction { get; set; }
@@ -49,7 +49,7 @@ namespace businessLogic.viewModels
         {
             get
             {
-                if (totalPages > 2)
+                if (totalPages >= 2)
                 {
                     if (currentPage == 1) return currentPage;
                     else return this.currentPage - 1;
@@ -62,7 +62,7 @@ namespace businessLogic.viewModels
         {
             get
             {
-                if (totalPages > 2)
+                if (totalPages >= 2)
                 {
                     if (currentPage == totalPages) return currentPage;
                     else return this.currentPage + 1;

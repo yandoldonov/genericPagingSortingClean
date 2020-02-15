@@ -37,30 +37,7 @@ namespace businessLogic.viewModels
 
         public string genericTypeName { get; set; }
 
-        public queryOptions getfromString()
-        {
-            switch (this.selectedQuetyOption)
-            {
-                case "equals":
-                    return queryOptions.equals;
-                case "notEquals":
-                    return queryOptions.notEquals;
-                case "contains":
-                    return queryOptions.contains;
-                case "lessThan":
-                    return queryOptions.lessThan;
-                case "largerThan":
-                    return queryOptions.largerThan;
-                case "excludes":
-                    return queryOptions.excludes;
-                case "isTrue":
-                    return queryOptions.isTrue;
-                case "isFalse":
-                    return queryOptions.isFalse;
-                default:
-                    return queryOptions.none;
-            }
-        }
+        
 
         public void setFormInitialParameters(Type _type)
         {           

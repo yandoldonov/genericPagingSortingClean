@@ -25,7 +25,7 @@ namespace businessLogic.interfaces
         #region query properties
         string queryString { get; set; }
         string selectedProperty { get; set; }
-        queryOptions queryOptions { get; set; }
+        string queryOptions { get; set; }
         #endregion
 
         int previousPage { get; }

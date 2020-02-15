@@ -33,14 +33,16 @@ namespace genericPagingSortingClean.Controllers
            int? takeCount,
            string selectedProperty,
            string queryString,
-           queryOptions queryOptions)
+           string queryOptions)
         {
             using (IListModelFactory<TDataItem, TListModel> factory = new genericListModelFactory<TDataItem, TListModel, TViewModel>())
             {
                 if (pageNumber != null && pageNumber is int && takeCount != null && takeCount is int)
                 {
-                    if (string.IsNullOrEmpty(selectedProperty) || string.IsNullOrEmpty(queryString))
+                    if (string.IsNullOrEmpty(selectedProperty))
                     {
+                        if (string.IsNullOrEmpty(queryString)) queryString = string.Empty;
+
                         if (string.IsNullOrEmpty(orderBy))
                             return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", (int)takeCount, (int)pageNumber));
                         else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", orderBy, (sortOrder)sortOrder, (int)takeCount, (int)pageNumber));
@@ -55,8 +57,10 @@ namespace genericPagingSortingClean.Controllers
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(selectedProperty) || string.IsNullOrEmpty(queryString))
+                    if (string.IsNullOrEmpty(selectedProperty))
                     {
+                        if (string.IsNullOrEmpty(queryString)) queryString = string.Empty;
+
                         if (string.IsNullOrEmpty(orderBy))
                             return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", 10, 1));
                         else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", orderBy, (sortOrder)sortOrder, 10, 1));
@@ -77,7 +81,7 @@ namespace genericPagingSortingClean.Controllers
         {
             using (IListModelFactory<TDataItem, TListModel> factory = new genericListModelFactory<TDataItem, TListModel, TViewModel>())
             {
-                return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.orderBy, sortOrder.ASC, 10, 1, model.selectedProperty, model.queryString, model.getfromString()));
+                return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.orderBy, sortOrder.ASC, 10, 1, model.selectedProperty, model.queryString, model.selectedQuetyOption));
             }
         }
 
@@ -120,7 +124,7 @@ namespace genericPagingSortingClean.Controllers
                         if (string.IsNullOrEmpty(model.orderBy))
                             return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.takeCount, model.currentPage));
                         else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml",
-                            factory.getDataList(base.title, "pagedListPartial", model.orderBy, model.currentSortOrder, model.takeCount, model.currentPage, model.selectedProperty, model.queryString, model.getfromString()));
+                            factory.getDataList(base.title, "pagedListPartial", model.orderBy, model.currentSortOrder, model.takeCount, model.currentPage, model.selectedProperty, model.queryString, model.selectedQuetyOption));
                     }
                 }
                 else
@@ -135,7 +139,7 @@ namespace genericPagingSortingClean.Controllers
                     {
                         if (string.IsNullOrEmpty(model.orderBy))
                             return View(factory.getDataList(base.title, "pagedListPartial", 10, 1));
-                        else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.orderBy, model.currentSortOrder, 10, 1, model.selectedProperty, model.queryString, model.getfromString()));
+                        else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.orderBy, model.currentSortOrder, 10, 1, model.selectedProperty, model.queryString, model.selectedQuetyOption));
                     }
                 }
             }

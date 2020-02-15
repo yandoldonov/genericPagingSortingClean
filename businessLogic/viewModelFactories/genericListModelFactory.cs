@@ -211,7 +211,7 @@ namespace businessLogic.viewModelFactories
             int pageNumber,
             string selectedProperty,
             string queryString,
-            queryOptions queryOptions)
+            string queryOptions)
         {
             IListModelCollection _collectionModel = new genericModelCollection(_controller, _controllerAction);
 
@@ -272,7 +272,7 @@ namespace businessLogic.viewModelFactories
             int thisSkip = 0;
             if (_collectionModel.totalItemCount > takeCount && pageNumber > 1)
             {
-                thisSkip = takeCount * pageNumber;
+                thisSkip = takeCount * (pageNumber - 1);
             }
 
             IQueryable<TDataItem> dataCollection;
@@ -332,7 +332,7 @@ namespace businessLogic.viewModelFactories
             foreach (var item in dataCollection) _collectionModel.items.Add(method.Invoke(null, new object[] { item }) as ICollectionItem);
 
             _collectionModel.currentPage = pageNumber;
-
+            
             _collectionModel.selectedProperty = selectedProperty;
             _collectionModel.queryString = queryString;
             _collectionModel.queryOptions = queryOptions;
@@ -351,11 +351,13 @@ namespace businessLogic.viewModelFactories
                 if (prop.PropertyType == typeof(int)) return filterType.INTVALUE;
                 if (prop.PropertyType == typeof(decimal)) return filterType.DECIMALVALUE;
                 if (prop.PropertyType == typeof(bool)) return filterType.BOOLVALUE;
-                if (prop.PropertyType == typeof(DateTime)) return filterType.DATETIME;
+                if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?)) return filterType.DATETIME;
             }
 
             return filterType.NONE;
         }
+
+        
 
 
         #region Dispose

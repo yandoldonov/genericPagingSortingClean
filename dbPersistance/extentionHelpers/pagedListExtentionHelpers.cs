@@ -3,6 +3,7 @@ using dbPersistance.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -22,7 +23,7 @@ namespace dbPersistance.extentionHelpers
                 takeCount = 10
             };
 
-            foreach(var propItem in typeExtentions.getPageListProperties(T))
+            foreach (var propItem in typeExtentions.getPageListProperties(T))
             {
                 _sortParameters.addPropertyParameters(new sortParameterItem()
                 {
@@ -43,9 +44,9 @@ namespace dbPersistance.extentionHelpers
 
             foreach (var propItem in typeExtentions.getPageListProperties(T))
             {
-                if(!selectedEncountered)
+                if (!selectedEncountered)
                 {
-                    if(typeExtentions.getPagedListPropertyAttribute(propItem).isThisDefault())
+                    if (typeExtentions.getPagedListPropertyAttribute(propItem).isThisDefault())
                     {
                         _selectList.Add(new SelectListItem { Text = typeExtentions.getPagedListPropertyAttribute(propItem).getDisplay(), Value = propItem.Name, Selected = true });
                         selectedEncountered = true;
@@ -59,7 +60,7 @@ namespace dbPersistance.extentionHelpers
                 {
                     _selectList.Add(new SelectListItem { Text = typeExtentions.getPagedListPropertyAttribute(propItem).getDisplay(), Value = propItem.Name });
                 }
-                
+
             }
 
             return _selectList;
@@ -67,14 +68,14 @@ namespace dbPersistance.extentionHelpers
 
         public static IEnumerable<SelectListItem> queryVariants(this Type T, string propertyName)
         {
-           var prop = typeExtentions.getPageListProperties(T).Where(x => x.Name == propertyName).FirstOrDefault();
+            var prop = typeExtentions.getPageListProperties(T).Where(x => x.Name == propertyName).FirstOrDefault();
 
             if (prop.PropertyType == typeof(string))
             {
                 return new List<SelectListItem>
                     {
                         new SelectListItem { Text = "equals", Value = "equals" },
-                        new SelectListItem { Text = "contains", Value = "contains" },                      
+                        new SelectListItem { Text = "contains", Value = "contains" },
                         new SelectListItem { Text = "excludes", Value = "excludes" }
                     };
             }
@@ -85,7 +86,7 @@ namespace dbPersistance.extentionHelpers
                         new SelectListItem { Text = "equals", Value = "equals" },
                         new SelectListItem { Text = "lessThan", Value = "lessThan" },
                         new SelectListItem { Text = "largerThan", Value = "largerThan" },
-                        new SelectListItem { Text = "notEqual", Value = "notEqual" }
+                        new SelectListItem { Text = "notEquals", Value = "notEquals" }
                     };
             }
             if (prop.PropertyType == typeof(decimal))
@@ -95,7 +96,7 @@ namespace dbPersistance.extentionHelpers
                         new SelectListItem { Text = "equals", Value = "equals" },
                         new SelectListItem { Text = "lessThan", Value = "lessThan" },
                         new SelectListItem { Text = "largerThan", Value = "largerThan" },
-                        new SelectListItem { Text = "notEqual", Value = "notEqual" }
+                        new SelectListItem { Text = "notEquals", Value = "notEquals" }
                     };
             }
             if (prop.PropertyType == typeof(bool))
@@ -112,6 +113,11 @@ namespace dbPersistance.extentionHelpers
                     {
                         new SelectListItem { Text = "none", Value = "none" }
                     };
+            }
+
+            if (getListOfEnums().Any(x => x.Name == prop.PropertyType.Name))
+            {
+                return getEnumValuesAsEnumerable(getListOfEnums().Where(x => x.Name == prop.PropertyType.Name).FirstOrDefault());
             }
 
             return new List<SelectListItem>
@@ -137,26 +143,65 @@ namespace dbPersistance.extentionHelpers
                 emptyList.Add(new selectlistItemHelper { name = "equals", guid = "equals" });
                 emptyList.Add(new selectlistItemHelper { name = "lessThan", guid = "lessThan" });
                 emptyList.Add(new selectlistItemHelper { name = "largerThan", guid = "largerThan" });
-                emptyList.Add(new selectlistItemHelper { name = "notEqual", guid = "notEqual" });
+                emptyList.Add(new selectlistItemHelper { name = "notEquals", guid = "notEquals" });
             }
             if (prop.PropertyType == typeof(decimal))
             {
                 emptyList.Add(new selectlistItemHelper { name = "equals", guid = "equals" });
                 emptyList.Add(new selectlistItemHelper { name = "lessThan", guid = "lessThan" });
                 emptyList.Add(new selectlistItemHelper { name = "largerThan", guid = "largerThan" });
-                emptyList.Add(new selectlistItemHelper { name = "notEqual", guid = "notEqual" });
+                emptyList.Add(new selectlistItemHelper { name = "notEquals", guid = "notEquals" });
             }
             if (prop.PropertyType == typeof(bool))
             {
                 emptyList.Add(new selectlistItemHelper { name = "isTrue", guid = "isTrue" });
                 emptyList.Add(new selectlistItemHelper { name = "isFalse", guid = "isFalse" });
             }
-            if (prop.PropertyType == typeof(DateTime))
+            if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?))
             {
-                emptyList.Add(new selectlistItemHelper { name = "none", guid = "none" });
+                emptyList.Add(new selectlistItemHelper { name = "equals", guid = "equals" });
+                emptyList.Add(new selectlistItemHelper { name = "lessThan", guid = "lessThan" });
+                emptyList.Add(new selectlistItemHelper { name = "largerThan", guid = "largerThan" });
+                emptyList.Add(new selectlistItemHelper { name = "notEquals", guid = "notEquals" });
+            }
+
+            if (getListOfEnums().Any(x => x.Name == prop.PropertyType.Name))
+            {
+                return getEnumValuesAsSelectList(getListOfEnums().Where(x => x.Name == prop.PropertyType.Name).FirstOrDefault());
             }
 
             return new SelectList(emptyList, "guid", "name");
+        }
+
+
+        public static IEnumerable<Type> getListOfEnums()
+        {
+            return Assembly.GetExecutingAssembly().GetTypes()
+                        .Where(x => x.IsSubclassOf(typeof(Enum))).ToList();
+        }
+
+        internal static SelectList getEnumValuesAsSelectList(Type t) 
+        {
+            List<selectlistItemHelper> emptyList = new List<selectlistItemHelper>();
+
+            foreach(var item in Enum.GetValues(t))
+            {
+                emptyList.Add(new selectlistItemHelper { name = item.ToString(), guid = item.ToString() });
+            }
+
+            return new SelectList(emptyList, "guid", "name");
+        }
+
+        internal static List<SelectListItem> getEnumValuesAsEnumerable(Type t)
+        {
+            List<SelectListItem> emptyList = new List<SelectListItem>();
+
+            foreach (var item in Enum.GetValues(t))
+            {
+                emptyList.Add(new SelectListItem { Text = item.ToString(), Value = item.ToString() });
+            }
+
+            return emptyList;
         }
     }
 }

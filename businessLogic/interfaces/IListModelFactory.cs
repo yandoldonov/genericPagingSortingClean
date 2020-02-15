@@ -22,6 +22,6 @@ namespace businessLogic.interfaces
         int pageNumber,
         string selectedProperty,
         string queryString,
-        queryOptions queryOptions);
+        string queryOptions);
     }
 }

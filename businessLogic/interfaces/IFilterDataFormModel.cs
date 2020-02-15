@@ -16,7 +16,7 @@ namespace businessLogic.interfaces
         IEnumerable<SelectListItem> properties { get; set; }
         IEnumerable<SelectListItem> queryVariants { get; set; }
         string genericTypeName { get; set; }
-        queryOptions getfromString();
+        // queryOptions getfromString();
 
         void setFormInitialParameters(Type T);
         void updateTakeCount(int takeCount);

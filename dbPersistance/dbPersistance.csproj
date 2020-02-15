@@ -87,7 +87,9 @@
     <Compile Include="enums\filterType.cs" />
     <Compile Include="enums\queryOptions.cs" />
     <Compile Include="enums\sortOrder.cs" />
+    <Compile Include="extentionHelpers\enumHelpers.cs" />
     <Compile Include="extentionHelpers\expressionTreeBuilder.cs" />
+    <Compile Include="extentionHelpers\genericExtentions.cs" />
     <Compile Include="extentionHelpers\pagedListExtentionHelpers.cs" />
     <Compile Include="extentionHelpers\typeExtentions.cs" />
     <Compile Include="helperModels\selectlistItemHelper.cs" />

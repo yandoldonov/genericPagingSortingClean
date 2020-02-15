@@ -12,218 +12,337 @@ namespace dbPersistance.extentionHelpers
 {
     public static class expressionTreeBuilder<TDataItem> where TDataItem : class, IPocoEntity
     {
-        public static Expression<Func<TDataItem, bool>> buildQueryExpression(string propertyName, string value, queryOptions _queryOptions)
+        public static Expression<Func<TDataItem, bool>> buildQueryExpression(string propertyName, string value, string _queryOptions)
         {
             try
             {
-                switch (_queryOptions)
+                if(genericExtentions<TDataItem>.isThePropertyOfStandardType(propertyName))
                 {
-                    case queryOptions.contains:
+                    #region process standard property
+                    queryOptions qo = enumHelpers.getfromString(_queryOptions);
+                    switch (qo)
+                    {
+                        case queryOptions.contains:
 
-                        var parameterExp = Expression.Parameter(typeof(TDataItem), "type");
-                        var propertyExp = Expression.Property(parameterExp, propertyName);
-                        MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                        var someValue = Expression.Constant(value, typeof(string));
-                        var containsMethodExp = Expression.Call(propertyExp, method, someValue);
-                        return Expression.Lambda<Func<TDataItem, bool>>(containsMethodExp, parameterExp);
+                            var parameterExp = Expression.Parameter(typeof(TDataItem), "type");
+                            var propertyExp = Expression.Property(parameterExp, propertyName);
+                            MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                            var someValue = Expression.Constant(value, typeof(string));
+                            var containsMethodExp = Expression.Call(propertyExp, method, someValue);
+                            return Expression.Lambda<Func<TDataItem, bool>>(containsMethodExp, parameterExp);
 
-                    case queryOptions.excludes:
+                        case queryOptions.excludes:
 
-                        var excludeParameterExp = Expression.Parameter(typeof(TDataItem), "type");
-                        var excludePropertyExp = Expression.Property(excludeParameterExp, propertyName);
-                        MethodInfo excludeMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                        var excludeValue = Expression.Constant(value, typeof(string));
-                        var ecludesMethodExp = Expression.Call(excludePropertyExp, excludeMethod, excludeValue);
-                        var rzlt = Expression.Lambda<Func<TDataItem, bool>>(ecludesMethodExp, excludeParameterExp);
+                            var excludeParameterExp = Expression.Parameter(typeof(TDataItem), "type");
+                            var excludePropertyExp = Expression.Property(excludeParameterExp, propertyName);
+                            MethodInfo excludeMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                            var excludeValue = Expression.Constant(value, typeof(string));
+                            var ecludesMethodExp = Expression.Call(excludePropertyExp, excludeMethod, excludeValue);
+                            var rzlt = Expression.Lambda<Func<TDataItem, bool>>(ecludesMethodExp, excludeParameterExp);
 
-                        return Expression.Lambda<Func<TDataItem, bool>>(
-                                Expression.Not(rzlt.Body),
-                                rzlt.Parameters);
+                            return Expression.Lambda<Func<TDataItem, bool>>(
+                                    Expression.Not(rzlt.Body),
+                                    rzlt.Parameters);
 
-                    case queryOptions.equals:
+                        case queryOptions.equals:
 
-                        var equalsParameter = Expression.Parameter(typeof(TDataItem), "w");
-                        var equalsProperty = Expression.Property(equalsParameter, propertyName);
-                        var equalsPropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
+                            var equalsParameter = Expression.Parameter(typeof(TDataItem), "w");
+                            var equalsProperty = Expression.Property(equalsParameter, propertyName);
+                            var equalsPropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
 
-                        BinaryExpression equalsBody;
+                            BinaryExpression equalsBody;
 
-                        if (equalsPropertyType == typeof(string)) 
-                        {
-                            equalsBody = Expression.Equal(equalsProperty,
-                             Expression.Convert(Expression.Constant(value), equalsPropertyType));
-                            return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
-                        }
-                        else if (equalsPropertyType == typeof(int))
-                        {
-                            if (int.TryParse(value, out int _intValue))
+                            if (equalsPropertyType == typeof(string))
                             {
                                 equalsBody = Expression.Equal(equalsProperty,
-                                Expression.Convert(Expression.Constant(_intValue), equalsPropertyType));
+                                 Expression.Convert(Expression.Constant(value), equalsPropertyType));
                                 return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
                             }
-                        }
-                        else if (equalsPropertyType == typeof(decimal))
-                        {
-                            if (decimal.TryParse(value, out decimal _decimalValue))
+                            else if (equalsPropertyType == typeof(int))
                             {
-                                equalsBody = Expression.Equal(equalsProperty,
-                                Expression.Convert(Expression.Constant(_decimalValue), equalsPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                if (int.TryParse(value, out int _intValue))
+                                {
+                                    equalsBody = Expression.Equal(equalsProperty,
+                                    Expression.Convert(Expression.Constant(_intValue), equalsPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                }
                             }
-                        }
-                        else if (equalsPropertyType == typeof(bool))
-                        {
-                            if (value.ToLower() == "isTrue")
+                            else if (equalsPropertyType == typeof(decimal))
                             {
-                                equalsBody = Expression.Equal(equalsProperty,
-                                Expression.Convert(Expression.Constant(true), equalsPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                if (decimal.TryParse(value, out decimal _decimalValue))
+                                {
+                                    equalsBody = Expression.Equal(equalsProperty,
+                                    Expression.Convert(Expression.Constant(_decimalValue), equalsPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                }
                             }
-                            else
+                            else if (equalsPropertyType == typeof(bool))
                             {
-                                equalsBody = Expression.Equal(equalsProperty,
-                               Expression.Convert(Expression.Constant(false), equalsPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
-                            }
+                                if (value.ToLower() == "isTrue")
+                                {
+                                    equalsBody = Expression.Equal(equalsProperty,
+                                    Expression.Convert(Expression.Constant(true), equalsPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                }
+                                else
+                                {
+                                    equalsBody = Expression.Equal(equalsProperty,
+                                   Expression.Convert(Expression.Constant(false), equalsPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                }
 
-                        }
-                        else if (equalsPropertyType == typeof(DateTime))
-                        {
-                            if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                            }
+                            else if (equalsPropertyType == typeof(DateTime) || equalsPropertyType == typeof(DateTime?))
                             {
-                                equalsBody = Expression.Equal(equalsProperty,
-                                Expression.Convert(Expression.Constant(_dateTimeValue), equalsPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                                {
+                                    equalsBody = Expression.Equal(equalsProperty,
+                                    Expression.Convert(Expression.Constant(_dateTimeValue), equalsPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                                }
                             }
-                        }
-                        throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");                     
+                            throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");
 
-                    case queryOptions.largerThan:
+                        case queryOptions.notEquals:
 
-                        var param = Expression.Parameter(typeof(TDataItem), "w");
-                        var property = Expression.Property(param, propertyName);
-                        var propertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
+                            var notEqualsParameter = Expression.Parameter(typeof(TDataItem), "w");
+                            var notEqualsProperty = Expression.Property(notEqualsParameter, propertyName);
+                            var notEqualsPropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
 
-                        BinaryExpression body;
+                            BinaryExpression notEqualsBody;
 
-                        if (propertyType == typeof(string))
-                        {
-                            body = Expression.GreaterThan(property,
-                            Expression.Convert(Expression.Constant(value), propertyType));
-                            return Expression.Lambda<Func<TDataItem, bool>>(body, param);
-                        }
-                        else if (propertyType == typeof(int))
-                        {
-                            if(int.TryParse(value, out int _intValue))
+                            if (notEqualsPropertyType == typeof(string))
+                            {
+                                equalsBody = Expression.Equal(notEqualsProperty,
+                                 Expression.Convert(Expression.Constant(value), notEqualsPropertyType)); 
+                                var nonEqualRzlt = Expression.Lambda<Func<TDataItem, bool>>(equalsBody, notEqualsParameter);
+
+                                return Expression.Lambda<Func<TDataItem, bool>>(
+                                   Expression.Not(nonEqualRzlt.Body),
+                                   nonEqualRzlt.Parameters);
+                            }
+                            else if (notEqualsPropertyType == typeof(int))
+                            {
+                                if (int.TryParse(value, out int _intValue))
+                                {
+                                    notEqualsBody = Expression.Equal(notEqualsProperty,
+                                    Expression.Convert(Expression.Constant(_intValue), notEqualsPropertyType));
+                                    var nonEqualRzlt = Expression.Lambda<Func<TDataItem, bool>>(notEqualsBody, notEqualsParameter);
+
+                                    return Expression.Lambda<Func<TDataItem, bool>>(
+                                   Expression.Not(nonEqualRzlt.Body),
+                                   nonEqualRzlt.Parameters);
+                                }
+                            }
+                            else if (notEqualsPropertyType == typeof(decimal))
+                            {
+                                if (decimal.TryParse(value, out decimal _decimalValue))
+                                {
+                                    notEqualsBody = Expression.Equal(notEqualsProperty,
+                                    Expression.Convert(Expression.Constant(_decimalValue), notEqualsPropertyType));
+                                    var nonEqualRzlt = Expression.Lambda<Func<TDataItem, bool>>(notEqualsBody, notEqualsParameter);
+
+                                   return Expression.Lambda<Func<TDataItem, bool>>(
+                                   Expression.Not(nonEqualRzlt.Body),
+                                   nonEqualRzlt.Parameters);
+                                }
+                            }
+                            else if (notEqualsPropertyType == typeof(bool))
+                            {
+                                if (value.ToLower() == "isTrue")
+                                {
+                                    notEqualsBody = Expression.Equal(notEqualsProperty,
+                                    Expression.Convert(Expression.Constant(true), notEqualsPropertyType));
+                                    var nonEqualRzlt = Expression.Lambda<Func<TDataItem, bool>>(notEqualsBody, notEqualsParameter);
+
+                                    return Expression.Lambda<Func<TDataItem, bool>>(
+                                  Expression.Not(nonEqualRzlt.Body),
+                                  nonEqualRzlt.Parameters);
+                                }
+                                else
+                                {
+                                    notEqualsBody = Expression.Equal(notEqualsProperty,
+                                   Expression.Convert(Expression.Constant(false), notEqualsPropertyType));
+                                    var nonEqualRzlt = Expression.Lambda<Func<TDataItem, bool>>(notEqualsBody, notEqualsParameter);
+
+                                    return Expression.Lambda<Func<TDataItem, bool>>(
+                                  Expression.Not(nonEqualRzlt.Body),
+                                  nonEqualRzlt.Parameters);
+                                }
+
+                            }
+                            else if (notEqualsPropertyType == typeof(DateTime) || notEqualsPropertyType == typeof(DateTime?))
+                            {
+                                if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                                {
+                                    notEqualsBody = Expression.Equal(notEqualsProperty,
+                                    Expression.Convert(Expression.Constant(_dateTimeValue), notEqualsPropertyType));
+                                    var nonEqualRzlt = Expression.Lambda<Func<TDataItem, bool>>(notEqualsBody, notEqualsParameter);
+
+                                    return Expression.Lambda<Func<TDataItem, bool>>(
+                                   Expression.Not(nonEqualRzlt.Body),
+                                   nonEqualRzlt.Parameters);
+                                }
+                            }
+                            throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");
+                             
+                        case queryOptions.largerThan:
+
+                            var param = Expression.Parameter(typeof(TDataItem), "w");
+                            var property = Expression.Property(param, propertyName);
+                            var propertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
+
+                            BinaryExpression body;
+
+                            if (propertyType == typeof(string))
                             {
                                 body = Expression.GreaterThan(property,
-                                Expression.Convert(Expression.Constant(_intValue), propertyType));
+                                Expression.Convert(Expression.Constant(value), propertyType));
                                 return Expression.Lambda<Func<TDataItem, bool>>(body, param);
                             }
-                        }
-                        else if (propertyType == typeof(decimal))
-                        {
-                            if (decimal.TryParse(value, out decimal _decimalValue))
+                            else if (propertyType == typeof(int))
                             {
-                                body = Expression.GreaterThan(property,
-                                Expression.Convert(Expression.Constant(_decimalValue), propertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                if (int.TryParse(value, out int _intValue))
+                                {
+                                    body = Expression.GreaterThan(property,
+                                    Expression.Convert(Expression.Constant(_intValue), propertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                }
                             }
-                        }
-                        else if (propertyType == typeof(bool))
-                        {
-                            if(value.ToLower() == "isTrue")
+                            else if (propertyType == typeof(decimal))
                             {
-                                body = Expression.GreaterThan(property,
-                                Expression.Convert(Expression.Constant(true), propertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                if (decimal.TryParse(value, out decimal _decimalValue))
+                                {
+                                    body = Expression.GreaterThan(property,
+                                    Expression.Convert(Expression.Constant(_decimalValue), propertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                }
                             }
-                            else
+                            else if (propertyType == typeof(bool))
                             {
-                                body = Expression.GreaterThan(property,
-                               Expression.Convert(Expression.Constant(false), propertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(body, param);
-                            }
+                                if (value.ToLower() == "isTrue")
+                                {
+                                    body = Expression.GreaterThan(property,
+                                    Expression.Convert(Expression.Constant(true), propertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                }
+                                else
+                                {
+                                    body = Expression.GreaterThan(property,
+                                   Expression.Convert(Expression.Constant(false), propertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                }
 
-                        }
-                        else if (propertyType == typeof(DateTime))
-                        {
-                            if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                            }
+                            else if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?))
                             {
-                                body = Expression.GreaterThan(property,
-                                Expression.Convert(Expression.Constant(_dateTimeValue), propertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                                {
+                                    body = Expression.GreaterThan(property,
+                                    Expression.Convert(Expression.Constant(_dateTimeValue), propertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(body, param);
+                                }
                             }
-                        }
-                        throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");        
+                            throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");
 
-                    case queryOptions.lessThan:
+                        case queryOptions.lessThan:
 
-                        var lessThanParameter = Expression.Parameter(typeof(TDataItem), "w");
-                        var lessThanProperty = Expression.Property(lessThanParameter, propertyName);
-                        var lessThanPropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType; 
+                            var lessThanParameter = Expression.Parameter(typeof(TDataItem), "w");
+                            var lessThanProperty = Expression.Property(lessThanParameter, propertyName);
+                            var lessThanPropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
 
 
-                        BinaryExpression lessThanBody;
+                            BinaryExpression lessThanBody;
 
-                        if (lessThanPropertyType == typeof(string))
-                        {
-                            lessThanBody = Expression.LessThan(lessThanProperty,
-                            Expression.Convert(Expression.Constant(value), lessThanPropertyType));
-                            return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
-                        }
-                        else if (lessThanPropertyType == typeof(int))
-                        {
-                            if (int.TryParse(value, out int _intValue))
-                            {
-                                lessThanBody = Expression.LessThan(lessThanProperty,
-                                Expression.Convert(Expression.Constant(_intValue), lessThanPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
-                            }
-                        }
-                        else if (lessThanPropertyType == typeof(decimal))
-                        {
-                            if (decimal.TryParse(value, out decimal _decimalValue))
+                            if (lessThanPropertyType == typeof(string))
                             {
                                 lessThanBody = Expression.LessThan(lessThanProperty,
-                                 Expression.Convert(Expression.Constant(_decimalValue), lessThanPropertyType));
+                                Expression.Convert(Expression.Constant(value), lessThanPropertyType));
                                 return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
                             }
-                        }
-                        else if (lessThanPropertyType == typeof(bool))
-                        {
-                            if (value.ToLower() == "isTrue")
+                            else if (lessThanPropertyType == typeof(int))
                             {
-                                lessThanBody = Expression.LessThan(lessThanProperty,
-                                Expression.Convert(Expression.Constant(true), lessThanPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                if (int.TryParse(value, out int _intValue))
+                                {
+                                    lessThanBody = Expression.LessThan(lessThanProperty,
+                                    Expression.Convert(Expression.Constant(_intValue), lessThanPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                }
                             }
-                            else
+                            else if (lessThanPropertyType == typeof(decimal))
                             {
-                                lessThanBody = Expression.LessThan(lessThanProperty,
-                                Expression.Convert(Expression.Constant(false), lessThanPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                if (decimal.TryParse(value, out decimal _decimalValue))
+                                {
+                                    lessThanBody = Expression.LessThan(lessThanProperty,
+                                     Expression.Convert(Expression.Constant(_decimalValue), lessThanPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                }
                             }
-
-                        }
-                        else if (lessThanPropertyType == typeof(DateTime))
-                        {
-                            if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                            else if (lessThanPropertyType == typeof(bool))
                             {
-                                lessThanBody = Expression.LessThan(lessThanProperty,
-                                Expression.Convert(Expression.Constant(_dateTimeValue), lessThanPropertyType));
-                                return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                if (value.ToLower() == "isTrue")
+                                {
+                                    lessThanBody = Expression.LessThan(lessThanProperty,
+                                    Expression.Convert(Expression.Constant(true), lessThanPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                }
+                                else
+                                {
+                                    lessThanBody = Expression.LessThan(lessThanProperty,
+                                    Expression.Convert(Expression.Constant(false), lessThanPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                }
+
                             }
-                        }
-                        throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");
+                            else if (lessThanPropertyType == typeof(DateTime) || lessThanPropertyType == typeof(DateTime?))
+                            {
+                                if (DateTime.TryParse(value, out DateTime _dateTimeValue))
+                                {
+                                    lessThanBody = Expression.LessThan(lessThanProperty,
+                                    Expression.Convert(Expression.Constant(_dateTimeValue), lessThanPropertyType));
+                                    return Expression.Lambda<Func<TDataItem, bool>>(lessThanBody, lessThanParameter);
+                                }
+                            }
+                            throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");
 
-
-                       
-
-                    default:
-                        return null;
+                        default:
+                            return null;
+                    }
+                    #endregion
                 }
+                else
+                {
+                    var prop = typeExtentions.getPageListProperties(typeof(TDataItem)).Where(x => x.Name == propertyName).FirstOrDefault();
+
+                    // check if the provided propertyName match any of the existing enum types
+                    if (pagedListExtentionHelpers.getListOfEnums().Any(x => x.Name == prop.PropertyType.Name))
+                    {
+                        // now check if the value provided matches any of the indicated enum values
+                        var enumtype = pagedListExtentionHelpers.getListOfEnums().Where(x => x.Name == prop.PropertyType.Name).FirstOrDefault();
+
+                        bool foundMatch = false;
+
+                        foreach (var item in Enum.GetValues(enumtype))
+                        {
+                            if (item.ToString() == _queryOptions) foundMatch = true;
+                        }
+
+                        if (foundMatch)
+                        {
+                            var enumValueOfCorrectType = Convert.ChangeType(Enum.Parse(enumtype, _queryOptions), enumtype);
+
+                            var equalsParameter = Expression.Parameter(typeof(TDataItem), "w");
+                            var equalsProperty = Expression.Property(equalsParameter, propertyName);
+                            var equalsPropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
+
+                            BinaryExpression equalsBody = Expression.Equal(equalsProperty,
+                               Expression.Convert(Expression.Constant(enumValueOfCorrectType), equalsPropertyType));
+                            return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
+                        }                            
+                    }
+                }
+
+                return null;
             }
             catch(Exception ex)
             {
