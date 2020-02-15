@@ -113,8 +113,10 @@ namespace genericPagingSortingClean.Controllers
             {
                 if (model.currentPage > 0 && model.takeCount > 0)
                 {
-                    if (string.IsNullOrEmpty(model.selectedProperty) || string.IsNullOrEmpty(model.queryString))
+                    if (string.IsNullOrEmpty(model.selectedProperty))
                     {
+                        if (string.IsNullOrEmpty(model.queryString)) model.queryString = string.Empty;
+
                         if (string.IsNullOrEmpty(model.orderBy))
                             return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.takeCount, model.currentPage));
                         else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.orderBy, model.currentSortOrder, model.takeCount, model.currentPage));
@@ -129,8 +131,10 @@ namespace genericPagingSortingClean.Controllers
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(model.selectedProperty) || string.IsNullOrEmpty(model.queryString))
+                    if (string.IsNullOrEmpty(model.selectedProperty))
                     {
+                        if (string.IsNullOrEmpty(model.queryString)) model.queryString = string.Empty;
+
                         if (string.IsNullOrEmpty(model.orderBy))
                             return View(factory.getDataList(base.title, "pagedListPartial", 10, 1));
                         else return PartialView("~/Views/genericCrudList/_pagedListPartial.cshtml", factory.getDataList(base.title, "pagedListPartial", model.orderBy, model.currentSortOrder, 10, 1));
