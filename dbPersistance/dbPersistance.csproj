@@ -81,7 +81,9 @@
     <Compile Include="atributes\pagedListPropertyAttribute.cs" />
     <Compile Include="dbContext.cs" />
     <Compile Include="dbItemTypeOne.cs" />
+    <Compile Include="dbItemTypeThree.cs" />
     <Compile Include="dbItemTypeTwo.cs" />
+    <Compile Include="enums\dataTypeEnum.cs" />
     <Compile Include="enums\filterType.cs" />
     <Compile Include="enums\queryOptions.cs" />
     <Compile Include="enums\sortOrder.cs" />
@@ -100,6 +102,10 @@
     <Compile Include="Migrations\202002131432230_initial.designer.cs">
       <DependentUpon>202002131432230_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002150930078_itemThree.cs" />
+    <Compile Include="Migrations\202002150930078_itemThree.designer.cs">
+      <DependentUpon>202002150930078_itemThree.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="repositories\repository.cs" />
@@ -112,6 +118,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202002131432230_initial.resx">
       <DependentUpon>202002131432230_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002150930078_itemThree.resx">
+      <DependentUpon>202002150930078_itemThree.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

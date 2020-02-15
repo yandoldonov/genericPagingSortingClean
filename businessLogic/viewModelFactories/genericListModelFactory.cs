@@ -31,17 +31,22 @@ namespace businessLogic.viewModelFactories
         {
             IListModelCollection _collectionModel = new genericModelCollection(_controller, _controllerAction);
 
-
+            // build list of sortable properties - these will be used for column headings
             _collectionModel.viewSortParams = pagedListExtentionHelpers.getListSortParemeters(typeof(TDataItem));
+
+            // determine default sort column and sort order
             _collectionModel.currentSortOrder = _collectionModel.viewSortParams.defaultSortOrder;
             _collectionModel.currentSortColumn = _collectionModel.viewSortParams.defaultSortColumn;
 
+            // construct form model for set page and set take-count forms
             _collectionModel.filterFormModel.setFormInitialParameters(typeof(TDataItem));
 
+            // set default view parameters
             _collectionModel.currentViewCount = takeCount;
             _collectionModel.totalItemCount = unit.repository.Count();
             _collectionModel.currentPage = 1;
 
+            // calculate total pages count
             if (_collectionModel.totalItemCount > _collectionModel.currentViewCount)
             {
                 if (_collectionModel.totalItemCount % _collectionModel.currentViewCount > 0)
@@ -58,15 +63,15 @@ namespace businessLogic.viewModelFactories
                 _collectionModel.totalPages = 1;
             }
 
+            // calculate skip parameter for database query build
             if (pageNumber > _collectionModel.totalPages) pageNumber = _collectionModel.totalPages;
-
             int thisSkip = 0;
-
             if (_collectionModel.totalItemCount > takeCount && pageNumber > 1)
             {
                 thisSkip = takeCount * pageNumber;
             }
 
+            // get data from database
             var dataCollection = unit.repository.GetChunksOf(thisSkip, takeCount);
 
             MethodInfo method = typeof(TListModelItem).GetMethod("buildFromDbInstance");
@@ -83,11 +88,14 @@ namespace businessLogic.viewModelFactories
                 controller = _controller
             };
 
+            // build list of sortable properties - these will be used for column headings
             _collectionModel.viewSortParams = pagedListExtentionHelpers.getListSortParemeters(typeof(TDataItem));
+
+            // determine default sort column and sort order
             _collectionModel.currentSortOrder = _sortOrder;
             _collectionModel.currentSortColumn = orderBy;
 
-            #region prepare paremeters
+            #region prepare parameters
 
             // reverse sort order for current property
             _collectionModel.viewSortParams.reverseSortingOrderForCurrentProperty(orderBy, _sortOrder);
@@ -102,10 +110,13 @@ namespace businessLogic.viewModelFactories
                 (_controller,
                 _controllerAction, takeCount, pageNumber, _sortOrder, orderBy, string.Empty, string.Empty, string.Empty);
 
-
+            // get total amount of item in the database
             _collectionModel.totalItemCount = unit.repository.Count();
+
+            // update sorting order and default column for the model 
             _collectionModel.updateSortingOrder(orderBy, _sortOrder);
 
+            // calculate total pages
             if (_collectionModel.totalItemCount > _collectionModel.currentViewCount)
             {
                 if (_collectionModel.totalItemCount % _collectionModel.currentViewCount > 0)
@@ -122,10 +133,9 @@ namespace businessLogic.viewModelFactories
                 _collectionModel.totalPages = 1;
             }
 
+            // calculate skip
             if (pageNumber > _collectionModel.totalPages) pageNumber = _collectionModel.totalPages;
-
             int thisSkip = 0;
-
             if (_collectionModel.totalItemCount > takeCount && pageNumber > 1)
             {
                 thisSkip = takeCount * pageNumber;
@@ -229,13 +239,16 @@ namespace businessLogic.viewModelFactories
             //Expression<Func<TDataItem, bool>> _dataFilter 
             //    = getFilterMethod.Invoke(null, new object[] { selectedProperty, queryString, queryOptions }) as Expression<Func<TDataItem, bool>>;
 
+            // construct expression to filter data
             Expression<Func<TDataItem, bool>> _dataFilter 
                 = dbPersistance.extentionHelpers.expressionTreeBuilder<TDataItem>.buildQueryExpression(selectedProperty, queryString, queryOptions);
 
+            // update model total parameters 
             _collectionModel.currentViewCount = takeCount;
             _collectionModel.totalItemCount = unit.repository.CountSelectively(_dataFilter);
             _collectionModel.updateSortingOrder(orderBy, _sortOrder);
 
+            // calculate total pages count
             if (_collectionModel.totalItemCount > _collectionModel.currentViewCount)
             {
                 if (_collectionModel.totalItemCount % _collectionModel.currentViewCount > 0)
@@ -252,10 +265,11 @@ namespace businessLogic.viewModelFactories
                 _collectionModel.totalPages = 1;
             }
 
+            // set page number
             if (pageNumber > _collectionModel.totalPages) pageNumber = _collectionModel.totalPages;
 
+            // calculate skip
             int thisSkip = 0;
-
             if (_collectionModel.totalItemCount > takeCount && pageNumber > 1)
             {
                 thisSkip = takeCount * pageNumber;

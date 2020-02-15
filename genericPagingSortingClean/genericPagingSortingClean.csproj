@@ -291,6 +291,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\baseController.cs" />
     <Compile Include="Controllers\dbItemTypeOneController.cs" />
+    <Compile Include="Controllers\dbItemTypeThreeController.cs" />
     <Compile Include="Controllers\dbItemTypeTwoController.cs" />
     <Compile Include="Controllers\genericCrudListController.cs" />
     <Compile Include="Controllers\homeController.cs" />
@@ -317,6 +318,7 @@
     <Folder Include="Models\" />
     <Folder Include="Views\base\" />
     <Folder Include="Views\dbItemTypeOne\" />
+    <Folder Include="Views\dbItemTypeThree\" />
     <Folder Include="Views\dbItemTypeTwo\" />
   </ItemGroup>
   <ItemGroup>

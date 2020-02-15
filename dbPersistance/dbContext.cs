@@ -11,5 +11,6 @@ namespace dbPersistance
 
         public virtual DbSet<dbItemTypeOne> dbItemTypeOne { get; set; } 
         public virtual DbSet<dbItemTypeTwo> dbItemTypeTwo { get; set; }
+        public virtual DbSet<dbItemTypeThree> dbItemTypeThree { get; set; }
     }
 }
