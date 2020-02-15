@@ -135,28 +135,52 @@ namespace businessLogic.viewModelFactories
     
             filterType sortType = checkPropertyType(typeof(TDataItem), orderBy);
 
+            //switch (sortType)
+            //{
+            //    case filterType.STRINGVALUE:
+
+            //        MethodInfo stringSortOrderMethod = typeof(TDataItem).GetMethod("getStringSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithStringOrderBy(thisSkip, takeCount, _sortOrder, stringSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, string>>);
+            //        break;
+            //    case filterType.BOOLVALUE:
+            //        MethodInfo boolSortOrderMethod = typeof(TDataItem).GetMethod("getBoolSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithBoolOrderBy(thisSkip, takeCount, _sortOrder, boolSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, bool>>);
+            //        break;
+            //    case filterType.DECIMALVALUE:
+            //        MethodInfo decimalSortOrderMethod = typeof(TDataItem).GetMethod("getDecimalSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithDecimalOrderBy(thisSkip, takeCount, _sortOrder, decimalSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, decimal>>);
+            //        break;
+            //    case filterType.DATETIME:
+            //        MethodInfo dateTimeSortOrderMethod = typeof(TDataItem).GetMethod("getDateTimeSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, dateTimeSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, DateTime>>);
+            //        break;
+            //    default:
+            //        MethodInfo intSortOrderMethod = typeof(TDataItem).GetMethod("getIntSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, intSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, int>>);
+            //        break;
+            //}
+
             switch (sortType)
             {
                 case filterType.STRINGVALUE:
 
-                    MethodInfo stringSortOrderMethod = typeof(TDataItem).GetMethod("getStringSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithStringOrderBy(thisSkip, takeCount, _sortOrder, stringSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, string>>);
+                    dataCollection = unit.repository.GetChunksOfWithStringOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildStringOrdeByExpression(orderBy));
                     break;
                 case filterType.BOOLVALUE:
-                    MethodInfo boolSortOrderMethod = typeof(TDataItem).GetMethod("getBoolSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithBoolOrderBy(thisSkip, takeCount, _sortOrder, boolSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, bool>>);
+
+                    dataCollection = unit.repository.GetChunksOfWithBoolOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildBoolOrdeByExpression(orderBy));
                     break;
                 case filterType.DECIMALVALUE:
-                    MethodInfo decimalSortOrderMethod = typeof(TDataItem).GetMethod("getDecimalSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithDecimalOrderBy(thisSkip, takeCount, _sortOrder, decimalSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, decimal>>);
+
+                    dataCollection = unit.repository.GetChunksOfWithDecimalOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildDecimalOrdeByExpression(orderBy));
                     break;
                 case filterType.DATETIME:
-                    MethodInfo dateTimeSortOrderMethod = typeof(TDataItem).GetMethod("getDateTimeSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, dateTimeSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, DateTime>>);
+
+                    dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildDateTimeOrdeByExpression(orderBy));
                     break;
                 default:
-                    MethodInfo intSortOrderMethod = typeof(TDataItem).GetMethod("getIntSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, intSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, int>>);
+
+                    dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildIntOrdeByExpression(orderBy));
                     break;
             }
 
@@ -240,28 +264,52 @@ namespace businessLogic.viewModelFactories
 
             filterType sortType = checkPropertyType(typeof(TDataItem), orderBy);
 
+            //switch (sortType)
+            //{
+            //    case filterType.STRINGVALUE:
+
+            //        MethodInfo stringSortOrderMethod = typeof(TDataItem).GetMethod("getStringSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithStringOrderBy(thisSkip, takeCount, _sortOrder, stringSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, string>>, _dataFilter);
+            //        break;
+            //    case filterType.BOOLVALUE:
+            //        MethodInfo boolSortOrderMethod = typeof(TDataItem).GetMethod("getBoolSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithBoolOrderBy(thisSkip, takeCount, _sortOrder, boolSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, bool>>, _dataFilter);
+            //        break;
+            //    case filterType.DECIMALVALUE:
+            //        MethodInfo decimalSortOrderMethod = typeof(TDataItem).GetMethod("getDecimalSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithDecimalOrderBy(thisSkip, takeCount, _sortOrder, decimalSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, decimal>>, _dataFilter);
+            //        break;
+            //    case filterType.DATETIME:
+            //        MethodInfo dateTimeSortOrderMethod = typeof(TDataItem).GetMethod("getDateTimeSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, dateTimeSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, DateTime>>, _dataFilter);
+            //        break;
+            //    default:
+            //        MethodInfo intSortOrderMethod = typeof(TDataItem).GetMethod("getIntSortOrder");
+            //        dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, intSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, int>>, _dataFilter);
+            //        break;
+            //}
+
             switch (sortType)
             {
                 case filterType.STRINGVALUE:
 
-                    MethodInfo stringSortOrderMethod = typeof(TDataItem).GetMethod("getStringSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithStringOrderBy(thisSkip, takeCount, _sortOrder, stringSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, string>>, _dataFilter);
+                    dataCollection = unit.repository.GetChunksOfWithStringOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildStringOrdeByExpression(orderBy), _dataFilter);
                     break;
                 case filterType.BOOLVALUE:
-                    MethodInfo boolSortOrderMethod = typeof(TDataItem).GetMethod("getBoolSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithBoolOrderBy(thisSkip, takeCount, _sortOrder, boolSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, bool>>, _dataFilter);
+         
+                    dataCollection = unit.repository.GetChunksOfWithBoolOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildBoolOrdeByExpression(orderBy), _dataFilter);
                     break;
                 case filterType.DECIMALVALUE:
-                    MethodInfo decimalSortOrderMethod = typeof(TDataItem).GetMethod("getDecimalSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithDecimalOrderBy(thisSkip, takeCount, _sortOrder, decimalSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, decimal>>, _dataFilter);
+             
+                    dataCollection = unit.repository.GetChunksOfWithDecimalOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildDecimalOrdeByExpression(orderBy), _dataFilter);
                     break;
                 case filterType.DATETIME:
-                    MethodInfo dateTimeSortOrderMethod = typeof(TDataItem).GetMethod("getDateTimeSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, dateTimeSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, DateTime>>, _dataFilter);
+              
+                    dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildDateTimeOrdeByExpression(orderBy), _dataFilter);
                     break;
                 default:
-                    MethodInfo intSortOrderMethod = typeof(TDataItem).GetMethod("getIntSortOrder");
-                    dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, intSortOrderMethod.Invoke(null, new object[] { orderBy }) as Expression<Func<TDataItem, int>>, _dataFilter);
+                  
+                    dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildIntOrdeByExpression(orderBy), _dataFilter);
                     break;
             }
 

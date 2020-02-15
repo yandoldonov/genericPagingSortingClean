@@ -230,5 +230,61 @@ namespace dbPersistance.extentionHelpers
                 return null;
             }    
         }
+
+
+        // STRING
+        public static Expression<Func<TDataItem, string>> buildStringOrdeByExpression(string propertyName)
+        {
+            var arg = Expression.Parameter(typeof(TDataItem), "x");
+            var property = Expression.Property(arg, propertyName);
+            //return the property as object
+            var conv = Expression.Convert(property, typeof(string));
+            var exp = Expression.Lambda<Func<TDataItem, string>>(conv, new ParameterExpression[] { arg });
+            return exp;
+        }
+
+        // BOOL
+        public static Expression<Func<TDataItem, bool>> buildBoolOrdeByExpression(string propertyName)
+        {
+            var arg = Expression.Parameter(typeof(TDataItem), "x");
+            var property = Expression.Property(arg, propertyName);
+            //return the property as object
+            var conv = Expression.Convert(property, typeof(bool));
+            var exp = Expression.Lambda<Func<TDataItem, bool>>(conv, new ParameterExpression[] { arg });
+            return exp;
+        }
+
+        // DateTime
+        public static Expression<Func<TDataItem, DateTime>> buildDateTimeOrdeByExpression(string propertyName)
+        {
+            var arg = Expression.Parameter(typeof(TDataItem), "x");
+            var property = Expression.Property(arg, propertyName);
+            //return the property as object
+            var conv = Expression.Convert(property, typeof(DateTime));
+            var exp = Expression.Lambda<Func<TDataItem, DateTime>>(conv, new ParameterExpression[] { arg });
+            return exp;
+        } 
+
+        // INT
+        public static Expression<Func<TDataItem, int>> buildIntOrdeByExpression(string propertyName)
+        {
+            var arg = Expression.Parameter(typeof(TDataItem), "x");
+            var property = Expression.Property(arg, propertyName);
+            //return the property as object
+            var conv = Expression.Convert(property, typeof(int));
+            var exp = Expression.Lambda<Func<TDataItem, int>>(conv, new ParameterExpression[] { arg });
+            return exp;
+        }
+
+        // DECIMAL
+        public static Expression<Func<TDataItem, decimal>> buildDecimalOrdeByExpression(string propertyName)
+        {
+            var arg = Expression.Parameter(typeof(TDataItem), "x");
+            var property = Expression.Property(arg, propertyName);
+            //return the property as object
+            var conv = Expression.Convert(property, typeof(decimal));
+            var exp = Expression.Lambda<Func<TDataItem, decimal>>(conv, new ParameterExpression[] { arg });
+            return exp;
+        }
     }
 }
