@@ -40,6 +40,7 @@ namespace businessLogic.viewModelFactories
 
             _collectionModel.currentViewCount = takeCount;
             _collectionModel.totalItemCount = unit.repository.Count();
+            _collectionModel.currentPage = 1;
 
             if (_collectionModel.totalItemCount > _collectionModel.currentViewCount)
             {

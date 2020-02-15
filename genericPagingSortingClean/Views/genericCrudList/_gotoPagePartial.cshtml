@@ -7,7 +7,7 @@
         OnBegin = "grayOutArea",
         InsertionMode = InsertionMode.Replace,
         UpdateTargetId = "viewSectionPartial",
-    }, new { @class = "form-inline ml-auto" }))
+    }, new { @class = "form-inline float-sm-right" }))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.genericTypeName)
@@ -15,20 +15,19 @@
         @Html.HiddenFor(m => m.selectedQuetyOption)
         @Html.HiddenFor(m => m.queryString)
         @Html.HiddenFor(m => m.orderBy)
-        @Html.HiddenFor(m => m.currentPage)
+        @Html.HiddenFor(m => m.takeCount)
         @Html.HiddenFor(m => m.currentSortOrder)
 
         <div class="form-group">
             <div class="col-xs-2">
-                @Html.TextBoxFor(m => m.takeCount, new { @class = "form-control", placeholder = "selection" })
-                @Html.ValidationMessageFor(m => m.takeCount, null, new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.currentPage, new { @class = "form-control", placeholder = "selection" })
+                @Html.ValidationMessageFor(m => m.currentPage, null, new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-3">
-                <input type="submit" class="btn btn-danger" value="Set Count Per Page" name="ButtonType" id="actionButton" />
+                <input type="submit" class="btn btn-danger" value="Go To Page" name="ButtonType" id="actionButton" />
             </div>
         </div>
     }
 </div>
-

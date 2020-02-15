@@ -80,7 +80,7 @@ namespace businessLogic.viewModels
 
             this.orderBy = typeExtentions.getDefaultPagedListProperty(_type).Name;
             this.currentPage = 1;
-
+            this.takeCount = 10;
             this.genericTypeName = _type.Name;
         }
         public void updateTakeCount(int _takeCount)

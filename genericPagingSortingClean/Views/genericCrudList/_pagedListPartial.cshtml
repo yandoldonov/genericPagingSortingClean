@@ -39,7 +39,7 @@
     </div>
 
     <div class="row" style="margin-right: 10px;margin-left: 10px;">
-        <div class="col-md-4">
+        <div class="col-md-6">
             @if (Model.totalPages > 1 && Model.currentPage > 1)
             {
                 @Ajax.ActionLink("First", "pagedListPartial", Model.controller,
@@ -64,9 +64,9 @@
                                  },
                                  new { @class = "btn btn-outline-success my-2 my-sm-0", @style = "margin-left: 10px;" })
             }
-            <span>@Model.totalPages pages. @Model.totalItemCount Items. </span><span>current page: @Model.currentPage </span>
+            <span>Total pages: </span><span class="badge badge-secondary">@Model.totalPages</span> <span>total items: </span><span class="badge badge-dark">@Model.totalItemCount</span> <span>current page: </span><span class="badge badge-warning">@Model.currentPage</span>
         </div>
-        <div class="col-md-4 text-right">
+        <div class="col-md-6 text-right">
             @if (Model.totalPages > 1 && Model.currentPage < Model.totalPages)
             {
                 @Ajax.ActionLink("Next", "pagedListPartial", Model.controller,
@@ -94,8 +94,15 @@
 
 
         </div>
-        <div class="col-md-4 text-right">
+    </div>
+    <br />
+    <div class="row" style="margin-right: 10px;margin-left: 10px;">
+        <div class="col-md-6">
             @Html.Partial($"~/Views/genericCrudList/_updatePagedListTakeCountFormPartial.cshtml", Model.filterFormModel)
         </div>
+        <div class="col-md-6">
+            @Html.Partial($"~/Views/genericCrudList/_gotoPagePartial.cshtml", Model.filterFormModel)
+        </div>
     </div>
+    <br />
 </div>
