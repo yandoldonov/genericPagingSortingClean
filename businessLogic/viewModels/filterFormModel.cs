@@ -41,7 +41,7 @@ namespace businessLogic.viewModels
 
         public void setFormInitialParameters(Type _type)
         {           
-            this.properties = pagedListExtentionHelpers.searchablePropertyList(_type);
+            this.properties = pagedListExtentionHelpers.filterablePropertyList(_type);
 
             if (this.properties.Any())
             {

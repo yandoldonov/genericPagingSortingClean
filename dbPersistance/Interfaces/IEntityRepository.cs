@@ -38,6 +38,7 @@ namespace dbPersistance.Interfaces
         IQueryable<TEntity> GetChunksOfWithBoolOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, bool>> orderBy, Expression<Func<TEntity, bool>> filter = null);
         IQueryable<TEntity> GetChunksOfWithDecimalOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, decimal>> orderBy, Expression<Func<TEntity, bool>> filter = null);
         IQueryable<TEntity> GetChunksOfWithDateTimeOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, DateTime>> orderBy, Expression<Func<TEntity, bool>> filter = null);
+        IQueryable<TEntity> GetChunksOfWithNavigationalOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, int>> orderBy, Expression<Func<TEntity, bool>> filter = null);
 
         bool Any(Expression<Func<TEntity, bool>> filter = null);
 

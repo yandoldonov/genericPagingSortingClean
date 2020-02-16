@@ -36,12 +36,27 @@ namespace businessLogic.viewModels
 
             foreach(var item in dbPersistance.extentionHelpers.typeExtentions.getPageListProperties(typeof(TDbItem)))
             {
-                _basicListCollectionItem.properties.Add(new collectionItemProperty()
+               
+
+                collectionItemProperty _collectionItemProperty = new collectionItemProperty()
                 {
-                    display = dbPersistance.extentionHelpers.typeExtentions.getPagedListPropertyAttribute(item).getDisplay(),
-                    value = item.GetValue(_TDbItem).ToString(),
+                    display = dbPersistance.extentionHelpers.typeExtentions.getPagedListPropertyAttribute(item).getDisplay(),                    
                     number = dbPersistance.extentionHelpers.typeExtentions.getPagedListPropertyAttribute(item).getPosition(),
-                });
+                };
+
+                var _item = item.GetValue(_TDbItem);
+
+                if(_item is IPocoEntity _iPocoItem)
+                {
+                    _collectionItemProperty.value = _iPocoItem.name;
+                }
+                else
+                {
+                    _collectionItemProperty.value = _item.ToString();
+                }
+
+
+                _basicListCollectionItem.properties.Add(_collectionItemProperty);
             }
 
             return _basicListCollectionItem;

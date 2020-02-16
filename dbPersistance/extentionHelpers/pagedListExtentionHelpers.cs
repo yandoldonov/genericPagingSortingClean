@@ -3,6 +3,7 @@ using dbPersistance.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +61,38 @@ namespace dbPersistance.extentionHelpers
                 {
                     _selectList.Add(new SelectListItem { Text = typeExtentions.getPagedListPropertyAttribute(propItem).getDisplay(), Value = propItem.Name });
                 }
+
+            }
+
+            return _selectList;
+        }
+
+        public static IEnumerable<SelectListItem> filterablePropertyList(this Type T) 
+        {
+            bool selectedEncountered = false;
+            List<SelectListItem> _selectList = new List<SelectListItem>();
+
+            foreach (var propItem in typeExtentions.getPageListProperties(T))
+            {
+                if(typeExtentions.getPagedListPropertyAttribute(propItem).getPagedPropertyType() == enums.pagedPropertyType.orderAndFilter)
+                {
+                    if (!selectedEncountered)
+                    {
+                        if (typeExtentions.getPagedListPropertyAttribute(propItem).isThisDefault())
+                        {
+                            _selectList.Add(new SelectListItem { Text = typeExtentions.getPagedListPropertyAttribute(propItem).getDisplay(), Value = propItem.Name, Selected = true });
+                            selectedEncountered = true;
+                        }
+                        else
+                        {
+                            _selectList.Add(new SelectListItem { Text = typeExtentions.getPagedListPropertyAttribute(propItem).getDisplay(), Value = propItem.Name });
+                        }
+                    }
+                    else
+                    {
+                        _selectList.Add(new SelectListItem { Text = typeExtentions.getPagedListPropertyAttribute(propItem).getDisplay(), Value = propItem.Name });
+                    }
+                }               
 
             }
 
@@ -180,6 +213,14 @@ namespace dbPersistance.extentionHelpers
                         .Where(x => x.IsSubclassOf(typeof(Enum))).ToList();
         }
 
+        public static IEnumerable<Type> getListOfTypesThatImplementInterface(Type interfaceType)
+        {
+            var lst = System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+                 .Where(mytype => mytype.GetInterfaces().Contains(interfaceType));
+
+            return lst;
+        }
+
         internal static SelectList getEnumValuesAsSelectList(Type t) 
         {
             List<selectlistItemHelper> emptyList = new List<selectlistItemHelper>();
@@ -203,5 +244,10 @@ namespace dbPersistance.extentionHelpers
 
             return emptyList;
         }
+
+        public static Type getPocoType(string typeNameString)
+        {
+           return System.Reflection.Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(x => x.Name == typeNameString);
+        }      
     }
 }

@@ -405,5 +405,20 @@ namespace dbPersistance.extentionHelpers
             var exp = Expression.Lambda<Func<TDataItem, decimal>>(conv, new ParameterExpression[] { arg });
             return exp;
         }
+
+        // Navigational Object
+        public static Expression<Func<TDataItem, int>> buildNavigationalOrdeByExpression(string propertyName)
+        {
+            Type navigationalType = pagedListExtentionHelpers.getPocoType(propertyName);
+
+            ParameterExpression mainEntity = Expression.Parameter(typeof(TDataItem), "e");
+            Expression left = Expression.Property(mainEntity, typeof(TDataItem).GetProperty(propertyName));
+            left = Expression.Property(left, navigationalType.GetProperty("Id"));
+
+            var conv = Expression.Convert(left, typeof(int));
+            var exp = Expression.Lambda<Func<TDataItem, int>>(conv, new ParameterExpression[] { mainEntity });
+            return exp;
+        }       
+
     }
 }

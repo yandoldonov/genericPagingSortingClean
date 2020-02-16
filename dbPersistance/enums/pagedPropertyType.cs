@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace dbPersistance.enums
 {
-    public enum filterType
+    public enum pagedPropertyType
     {
-        NONE, INTVALUE, DECIMALVALUE, STRINGVALUE, BOOLVALUE, DATETIME, ENUMVALUE, POCONAVIGATIONAL
+        orderByOnly, orderAndFilter
     }
 }

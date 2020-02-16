@@ -1,5 +1,4 @@
-﻿using dbPersistance.enums;
-using dbPersistance.Interfaces;
+﻿using dbPersistance.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace dbPersistance.repositories
 {
-    public class repository<TEntity> : IEntityRepository<TEntity> where TEntity : class, IPocoEntity
+    public class entityRepository<TEntity> where TEntity : class, IPocoEntity
     {
         internal dbContext context;
         internal DbSet<TEntity> dbSet;
 
-        public repository(dbContext context)
+        public entityRepository(dbContext context)
         {
             this.context = context;
             this.dbSet = context.Set<TEntity>();
@@ -49,28 +48,7 @@ namespace dbPersistance.repositories
             }
         }
 
-        public virtual IEnumerable<TEntity> GetFiltered(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            if (orderBy != null)
-            {
-                return orderBy(query).ToList();
-            }
-            else
-            {
-                return query.ToList();
-            }
-        }
-
-        public virtual TEntity GetById(object id)
+        public virtual TEntity GetByID(object id)
         {
             return dbSet.Find(id);
         }
@@ -151,115 +129,12 @@ namespace dbPersistance.repositories
             return query.AsNoTracking().OfType<TChild>();
         }
 
-        public IQueryable<TEntity> GetChunksOf(int skip, int pageSize)
-        {
-            IQueryable<TEntity> query = dbSet;
-            return query.OrderBy(x => x.Id).Skip(skip).Take(pageSize);
-        }
-
-        public IQueryable<TEntity> GetChunksOf(int skip, int pageSize, sortOrder sortOrder)
+        public IQueryable<TEntity> GetChunksOf(int skip, int pageSize, Expression<Func<TEntity, int>> filter)
         {
             IQueryable<TEntity> query = dbSet;
 
-            if (sortOrder == sortOrder.DSC) return query.OrderByDescending(x => x.Id).Skip(skip).Take(pageSize);
-            else return query.OrderBy(x => x.Id).Skip(skip).Take(pageSize);
-        }
+            return query.OrderBy(filter).Skip(skip).Take(pageSize);
 
-
-        public IQueryable<TEntity> GetChunksOfWithIntOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, int>> orderBy, Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                if (sortOrder == sortOrder.DSC) return query.Where(filter).OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.Where(filter).OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-            else
-            {
-                if (sortOrder == sortOrder.DSC) return query.OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-        }
-
-        public IQueryable<TEntity> GetChunksOfWithStringOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, string>> orderBy, Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                if (sortOrder == sortOrder.DSC) return query.Where(filter).OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.Where(filter).OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-            else
-            {
-                if (sortOrder == sortOrder.DSC) return query.OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-        }
-
-        public IQueryable<TEntity> GetChunksOfWithBoolOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, bool>> orderBy, Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                if (sortOrder == sortOrder.DSC) return query.Where(filter).OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.Where(filter).OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-            else
-            {
-                if (sortOrder == sortOrder.DSC) return query.OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-        }
-
-        public IQueryable<TEntity> GetChunksOfWithDecimalOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, decimal>> orderBy, Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                if (sortOrder == sortOrder.DSC) return query.Where(filter).OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.Where(filter).OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-            else
-            {
-                if (sortOrder == sortOrder.DSC) return query.OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-        }
-
-        public IQueryable<TEntity> GetChunksOfWithDateTimeOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, DateTime>> orderBy, Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                if (sortOrder == sortOrder.DSC) return query.Where(filter).OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.Where(filter).OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-            else
-            {
-                if (sortOrder == sortOrder.DSC) return query.OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-        }
-
-        public IQueryable<TEntity> GetChunksOfWithNavigationalOrderBy(int skip, int pageSize, sortOrder sortOrder, Expression<Func<TEntity, int>> orderBy, Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                if (sortOrder == sortOrder.DSC) return query.Where(filter).OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.Where(filter).OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
-            else
-            {
-                if (sortOrder == sortOrder.DSC) return query.OrderByDescending(orderBy).Skip(skip).Take(pageSize);
-                else return query.OrderBy(orderBy).Skip(skip).Take(pageSize);
-            }
         }
 
         public bool Any(Expression<Func<TEntity, bool>> filter = null)
@@ -272,12 +147,6 @@ namespace dbPersistance.repositories
             }
             return query.Any();
         }
-
-        public void removeRange(IEnumerable<TEntity> _entities)
-        {
-            dbSet.RemoveRange(_entities);
-        }
-
 
         // async functions
 

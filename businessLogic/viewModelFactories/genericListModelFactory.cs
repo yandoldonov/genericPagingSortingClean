@@ -189,6 +189,10 @@ namespace businessLogic.viewModelFactories
 
                     dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildDateTimeOrdeByExpression(orderBy));
                     break;
+                case filterType.POCONAVIGATIONAL:
+
+                    dataCollection = unit.repository.GetChunksOfWithNavigationalOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildNavigationalOrdeByExpression(orderBy));
+                    break;
                 default:
 
                     dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildIntOrdeByExpression(orderBy));
@@ -353,6 +357,10 @@ namespace businessLogic.viewModelFactories
                 if (prop.PropertyType == typeof(bool)) return filterType.BOOLVALUE;
                 if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?)) return filterType.DATETIME;
             }
+
+            // check if this is an enum
+            if (pagedListExtentionHelpers.getListOfEnums().Any(x => x.Name == propertyName)) return filterType.ENUMVALUE;
+            if (pagedListExtentionHelpers.getListOfTypesThatImplementInterface(typeof(IPocoEntity)).Any(x => x.Name == propertyName)) return filterType.POCONAVIGATIONAL;
 
             return filterType.NONE;
         }

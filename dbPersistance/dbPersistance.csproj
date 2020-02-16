@@ -85,6 +85,7 @@
     <Compile Include="dbItemTypeTwo.cs" />
     <Compile Include="enums\dataTypeEnum.cs" />
     <Compile Include="enums\filterType.cs" />
+    <Compile Include="enums\pagedPropertyType.cs" />
     <Compile Include="enums\queryOptions.cs" />
     <Compile Include="enums\sortOrder.cs" />
     <Compile Include="extentionHelpers\enumHelpers.cs" />
@@ -108,10 +109,16 @@
     <Compile Include="Migrations\202002150930078_itemThree.designer.cs">
       <DependentUpon>202002150930078_itemThree.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002160723444_navigatinal.cs" />
+    <Compile Include="Migrations\202002160723444_navigatinal.designer.cs">
+      <DependentUpon>202002160723444_navigatinal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="repositories\entityRepository.cs" />
     <Compile Include="repositories\repository.cs" />
     <Compile Include="uOw\unitOfWork.cs" />
+    <Compile Include="uOw\uOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -123,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002150930078_itemThree.resx">
       <DependentUpon>202002150930078_itemThree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002160723444_navigatinal.resx">
+      <DependentUpon>202002160723444_navigatinal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
