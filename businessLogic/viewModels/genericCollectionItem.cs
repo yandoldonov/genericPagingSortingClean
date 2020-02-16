@@ -48,7 +48,7 @@ namespace businessLogic.viewModels
 
                 if(_item is IPocoEntity _iPocoItem)
                 {
-                    _collectionItemProperty.value = _iPocoItem.name;
+                    _collectionItemProperty.value = _iPocoItem.name + " :: id: " + _iPocoItem.Id;
                 }
                 else
                 {

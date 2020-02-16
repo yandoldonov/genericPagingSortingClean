@@ -326,6 +326,10 @@ namespace businessLogic.viewModelFactories
               
                     dataCollection = unit.repository.GetChunksOfWithDateTimeOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildDateTimeOrdeByExpression(orderBy), _dataFilter);
                     break;
+                case filterType.POCONAVIGATIONAL:
+
+                    dataCollection = unit.repository.GetChunksOfWithNavigationalOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildNavigationalOrdeByExpression(orderBy), _dataFilter);
+                    break;
                 default:
                   
                     dataCollection = unit.repository.GetChunksOfWithIntOrderBy(thisSkip, takeCount, _sortOrder, expressionTreeBuilder<TDataItem>.buildIntOrdeByExpression(orderBy), _dataFilter);
