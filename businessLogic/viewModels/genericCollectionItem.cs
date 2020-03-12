@@ -44,16 +44,23 @@ namespace businessLogic.viewModels
                     number = dbPersistance.extentionHelpers.typeExtentions.getPagedListPropertyAttribute(item).getPosition(),
                 };
 
-                var _item = item.GetValue(_TDbItem);
+                var _itemValue = item.GetValue(_TDbItem);
 
-                if(_item is IPocoEntity _iPocoItem)
+                if(_itemValue != null)
                 {
-                    _collectionItemProperty.value = _iPocoItem.name + " :: id: " + _iPocoItem.Id;
+                    if (_itemValue is IPocoEntity _iPocoItem)
+                    {
+                        _collectionItemProperty.value = _iPocoItem.name + " :: id: " + _iPocoItem.Id;
+                    }
+                    else
+                    {
+                        _collectionItemProperty.value = _itemValue.ToString();
+                    }
                 }
                 else
                 {
-                    _collectionItemProperty.value = _item.ToString();
-                }
+                    _collectionItemProperty.value = string.Empty;
+                }          
 
 
                 _basicListCollectionItem.properties.Add(_collectionItemProperty);

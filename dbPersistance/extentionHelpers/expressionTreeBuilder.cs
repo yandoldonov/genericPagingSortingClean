@@ -305,7 +305,28 @@ namespace dbPersistance.extentionHelpers
                             }
                             throw new InvalidOperationException("provided expression can not be processes as it is of incorrect type...");
 
-                        default:
+                        case queryOptions.isTrue:
+
+                            var isTrueParameter = Expression.Parameter(typeof(TDataItem), "w");
+                            var isTrueProperty = Expression.Property(isTrueParameter, propertyName);
+                            var isTruePropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
+
+                            equalsBody = Expression.Equal(isTrueProperty,
+                                    Expression.Convert(Expression.Constant(true), isTruePropertyType));
+                            var resultingLmbd = Expression.Lambda<Func<TDataItem, bool>>(equalsBody, isTrueParameter);
+                            return resultingLmbd;
+
+                        case queryOptions.isFalse:
+
+                            var isFalseParameter = Expression.Parameter(typeof(TDataItem), "w");
+                            var isFalseProperty = Expression.Property(isFalseParameter, propertyName);
+                            var isFalsePropertyType = typeof(TDataItem).GetProperty(propertyName).PropertyType;
+
+                            equalsBody = Expression.Equal(isFalseProperty,
+                                    Expression.Convert(Expression.Constant(false), isFalsePropertyType));
+                            return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, isFalseParameter);       
+
+                        default: 
                             return null;
                     }
                     #endregion
