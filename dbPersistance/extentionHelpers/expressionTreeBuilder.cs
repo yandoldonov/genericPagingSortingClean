@@ -1,4 +1,5 @@
-﻿using dbPersistance.enums;
+﻿using dbPersistance.atributes;
+using dbPersistance.enums;
 using dbPersistance.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -360,6 +361,43 @@ namespace dbPersistance.extentionHelpers
                                Expression.Convert(Expression.Constant(enumValueOfCorrectType), equalsPropertyType));
                             return Expression.Lambda<Func<TDataItem, bool>>(equalsBody, equalsParameter);
                         }                            
+                    }
+
+                    // its not an enum so it is navigational property
+
+                    Type navigationalType = pagedListExtentionHelpers.getPocoType(propertyName);
+
+                    var navProperty = navigationalType.GetProperties()
+                        .Where(p => Attribute.IsDefined(p, typeof(pagedListNavPropertyAttribute))).FirstOrDefault();
+
+                    if (navProperty != null)
+                    {
+                        queryOptions typeOfSelection = enumHelpers.getfromString(_queryOptions);
+                        switch (typeOfSelection)
+                        {
+                            case queryOptions.equals:
+
+                                ParameterExpression setXtobeTheParameterSymbol = Expression.Parameter(typeof(TDataItem), "x");
+                                Expression xEqualsPropertyName = Expression.Property(setXtobeTheParameterSymbol, typeof(TDataItem).GetProperty(propertyName));
+                                MemberExpression left = Expression.Property(xEqualsPropertyName, navigationalType.GetProperty(navProperty.Name));
+                                BinaryExpression equalsNavPropertyBody = Expression.Equal(left,
+                                Expression.Convert(Expression.Constant(value), typeof(string)));
+                                return Expression.Lambda<Func<TDataItem, bool>>(equalsNavPropertyBody, setXtobeTheParameterSymbol);
+
+
+                            case queryOptions.contains:
+
+                                ParameterExpression setYtobeTheParameterSymbol = Expression.Parameter(typeof(TDataItem), "y");
+                                Expression yEqualsPropertyName = Expression.Property(setYtobeTheParameterSymbol, typeof(TDataItem).GetProperty(propertyName));
+                                MemberExpression leftArg = Expression.Property(yEqualsPropertyName, navigationalType.GetProperty(navProperty.Name));
+                                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                                var someValue = Expression.Constant(value, typeof(string));
+                                var containsMethodExp = Expression.Call(leftArg, method, someValue);
+                                return Expression.Lambda<Func<TDataItem, bool>>(containsMethodExp, setYtobeTheParameterSymbol);
+
+                            default:
+                                return null;
+                        }
                     }
                 }
 

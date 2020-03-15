@@ -1,4 +1,5 @@
-﻿using dbPersistance.helperModels;
+﻿using dbPersistance.atributes;
+using dbPersistance.helperModels;
 using dbPersistance.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using dbPersistance.extentionHelpers;
 using System.Web.Mvc;
 
 namespace dbPersistance.extentionHelpers
@@ -103,6 +104,15 @@ namespace dbPersistance.extentionHelpers
         {
             var prop = typeExtentions.getPageListProperties(T).Where(x => x.Name == propertyName).FirstOrDefault();
 
+            if (prop.PropertyType.isDecoratedWithAttributeIncludeChildren(typeof(pagedListLinkedPropertyAttribute)))
+            {
+                return new List<SelectListItem>
+                {
+                        new SelectListItem { Text = "Equal To", Value = "equals" },
+                        new SelectListItem { Text = "Contains", Value = "contains" }
+                };
+            }
+
             if (prop.PropertyType == typeof(string))
             {
                 return new List<SelectListItem>
@@ -164,6 +174,12 @@ namespace dbPersistance.extentionHelpers
             List<selectlistItemHelper> emptyList = new List<selectlistItemHelper>();
 
             var prop = typeExtentions.getPageListProperties(T).Where(x => x.Name == propertyName).FirstOrDefault();
+
+            if (prop.PropertyType.isDecoratedWithAttributeIncludeChildren(typeof(pagedListLinkedPropertyAttribute)))
+            {
+                emptyList.Add(new selectlistItemHelper { name = "Equal To", guid = "equals" });
+                emptyList.Add(new selectlistItemHelper { name = "contains", guid = "contains" });
+            }
 
             if (prop.PropertyType == typeof(string))
             {

@@ -24,8 +24,11 @@ namespace dbPersistance
         public dataTypeEnum dataTypeEnum { get; set; }
         [pagedListProperty("Date Time Type", 6, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
         public DateTime? indicatedDate { get; set; }
-        [pagedListProperty("INavigational", 7, false, sortOrder.ASC, pagedPropertyType.orderByOnly)]
+        [pagedListProperty("INavigational", 7, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
         public virtual dbItemTypeOne dbItemTypeOne { get; set; }
+
+        public string pagedListDescription => name;
+        public string selectListTextDescription => name;
     }
 
 }

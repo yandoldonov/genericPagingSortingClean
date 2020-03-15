@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace dbPersistance
 {
+  
     public class dbItemTypeTwo : IPocoEntity
     {
         [pagedListProperty("Id", 1, true, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
@@ -32,7 +33,10 @@ namespace dbPersistance
         public int intVlue { get; set; }
         [pagedListProperty("Int Value #2", 9, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
         public int invFieldTwo { get; set; }
-        [pagedListProperty("INavigational", 10, false, sortOrder.ASC, pagedPropertyType.orderByOnly)]
+        [pagedListProperty("INavigational", 10, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
         public virtual dbItemTypeOne dbItemTypeOne { get; set; }
+
+        public string pagedListDescription => name;
+        public string selectListTextDescription => name;
     }
 }

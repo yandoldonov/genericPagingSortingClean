@@ -27,6 +27,16 @@ namespace dbPersistance.Interfaces
         string name
         {
             get;
-        }       
+        }
+
+        string pagedListDescription
+        {
+            get;
+        }
+
+        string selectListTextDescription
+        {
+            get;
+        }
     }
 }

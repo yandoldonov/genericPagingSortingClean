@@ -46,22 +46,32 @@ namespace businessLogic.viewModels
 
                 var _itemValue = item.GetValue(_TDbItem);
 
-                if(_itemValue != null)
+                if (_itemValue != null)
                 {
                     if (_itemValue is IPocoEntity _iPocoItem)
                     {
-                        _collectionItemProperty.value = _iPocoItem.name + " :: id: " + _iPocoItem.Id;
+                        _collectionItemProperty.value = _iPocoItem.pagedListDescription;
                     }
                     else
                     {
-                        _collectionItemProperty.value = _itemValue.ToString();
+                        if (_itemValue != null)
+                        {
+                            if (_itemValue is DateTime dateTimeValue)
+                            {
+                                _collectionItemProperty.value = dateTimeValue.ToShortDateString();
+                            }
+                            else
+                            {
+                                _collectionItemProperty.value = _itemValue.ToString();
+                            }
+                        }
+                        else _collectionItemProperty.value = string.Empty;
                     }
                 }
                 else
                 {
                     _collectionItemProperty.value = string.Empty;
-                }          
-
+                }
 
                 _basicListCollectionItem.properties.Add(_collectionItemProperty);
             }

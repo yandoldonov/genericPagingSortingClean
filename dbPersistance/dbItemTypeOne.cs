@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace dbPersistance
 {
+    [pagedListLinkedProperty]
     public class dbItemTypeOne : IPocoEntity
     {
         public dbItemTypeOne()
@@ -24,6 +25,8 @@ namespace dbPersistance
         public int Id { get; set; }
         [pagedListProperty("Guid", 2, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
         public string guid { get; set; }
+
+        [pagedListNavProperty]
         [pagedListProperty("Name", 3, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
         public string name { get; set; }
         [pagedListProperty("Description", 4, false, sortOrder.ASC, pagedPropertyType.orderAndFilter)]
@@ -34,6 +37,9 @@ namespace dbPersistance
         public bool boolvalue { get; set; }
         public virtual ICollection<dbItemTypeTwo> dbItemTypeTwos { get; set; }
         public virtual ICollection<dbItemTypeThree> dbItemTypeThrees { get; set; }
+
+        public string pagedListDescription => name;
+        public string selectListTextDescription => name;
 
     }
 }
